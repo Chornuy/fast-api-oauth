@@ -1,0 +1,39 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+fastapi = "*"
+pydentic = "*"
+pydantic-settings = "*"
+asyncclick = "*"
+uvicorn = {extras = ["standard"], version = "*"}
+beanie = "*"
+httpx = "*"
+asgi-lifespan = "*"
+pytest-mock = "*"
+install = "*"
+pytest-asyncio = "*"
+email-validator = "*"
+fastapi-mail = "*"
+itsdangerous = "*"
+bcrypt = "4.0.1"
+passlib = {extras = ["bcrypt"], version = "*"}
+python-jose = {extras = ["cryptography"], version = "*"}
+python-multipart = "*"
+pyotp = "*"
+
+[dev-packages]
+coverage = "*"
+pytest = "*"
+pytest-sugar = "*"
+mypy = "*"
+flake8-isort = "*"
+black = "*"
+flake8 = "*"
+pre-commit = "*"
+watchfiles = "*"
+
+[requires]
+python_version = "3.11"

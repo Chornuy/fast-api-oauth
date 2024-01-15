@@ -1,0 +1,48 @@
+version: "3.9"
+
+volumes:
+  mongo_data: {}
+
+networks:
+  fast-api-websocket:
+    driver: bridge
+
+services:
+
+  mongo:
+    image: mongo:6.0
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "root"
+      MONGO_INITDB_ROOT_PASSWORD: "example"
+      MONGO_INITDB_USER: "mongodb"
+      MONGO_INITDB_PWD: "mongodb"
+    volumes:
+      - mongo_data:/data/db
+      - .provisions/mongo-init-js/:/docker-entrypoint-initdb.d/:ro
+    ports:
+      - "27017:27017"
+    networks:
+      - fast-api-websocket
+
+  mailhog:
+    image: mailhog/mailhog:v1.0.0
+    ports:
+      - "8025:8025"
+    networks:
+      - fast-api-websocket
+
+  fast-api: &fast-api
+    build:
+      context: .
+      dockerfile: .provisions/docker/fast-api/dev/Dockerfile
+    volumes:
+      - .:/var/app:z
+      - .provisions/docker-fast-api-startup-script/:/docker-startup-script
+    env_file:
+      - .env
+    depends_on:
+      - mongo
+    ports:
+      - "8080:8080"
+    networks:
+      - fast-api-websocket
