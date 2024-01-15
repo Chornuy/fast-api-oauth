@@ -1,12 +1,16 @@
 from datetime import datetime
+from typing import TYPE_CHECKING
+
+from beanie.odm.operators.find.comparison import Eq
 
 from app.libs.odm_repository.repository import BaseRepository
 
+if TYPE_CHECKING:
+    from beanie.odm.documents import JwtToken
+
 
 class JwtTokenRepository(BaseRepository):
-    """
-
-    """
+    """ """
 
     async def is_blacklisted(self, jti: str) -> bool:
         """
@@ -18,8 +22,7 @@ class JwtTokenRepository(BaseRepository):
             bool:
         """
         token = await self.get_document().find_one(
-            self.get_document().jti == jti,
-            self.get_document().is_blacklisted == True
+            self.get_document().jti == jti, Eq(self.get_document().is_blacklisted, True)
         )
         return True if token else False
 
@@ -36,12 +39,7 @@ class JwtTokenRepository(BaseRepository):
         """
 
         token_obj = await self.get_or_create(
-            self.get_document().jti == jti,
-            defaults={
-                "token": token,
-                "jti": jti,
-                "expire_at": expire_at
-            }
+            self.get_document().jti == jti, defaults={"token": token, "jti": jti, "expire_at": expire_at}
         )
         token_obj.is_blacklisted = True
         await token_obj.save()
@@ -49,7 +47,6 @@ class JwtTokenRepository(BaseRepository):
 
 
 class OAuthCodeRepository(BaseRepository):
-
     async def get_code(self, code: str):
         """
 

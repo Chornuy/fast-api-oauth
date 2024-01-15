@@ -1,6 +1,6 @@
 from typing import Any
 
-from app.libs.oauth_flow.exceptions import GrantTypeKeyNotFound, NotSupportedGrantTypeFlow, NoMethodForGrantTypeFound
+from app.libs.oauth_flow.exceptions import GrantTypeKeyNotFound, NoMethodForGrantTypeFound, NotSupportedGrantTypeFlow
 
 
 class BaseOauthFlowManager:

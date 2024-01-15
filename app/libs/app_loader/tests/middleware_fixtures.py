@@ -3,7 +3,6 @@ from app.libs.app_loader.middlewares.exceptions import SkipMiddlewareException
 
 
 class FixtureTestMiddleware(BaseLoaderMiddleware):
-
     def load(self, context: dict, config: dict):
         context["testing_result"] = "ok"
         return context
@@ -21,7 +20,6 @@ class AnotherClass:
 
 
 class FixtureWrongSubclassMiddleware(AnotherClass):
-
     def load(self, context: dict, config: dict):
         pass
 
@@ -32,6 +30,5 @@ class NotImplementLoadMethodMiddleware(BaseLoaderMiddleware):
 
 
 class SkippableLoaderMethodMiddleware(BaseLoaderMiddleware):
-
     def load(self, context: dict, config: dict):
         raise SkipMiddlewareException("skip")

@@ -18,6 +18,4 @@ async def lifespan_fixture(app: FastAPI):
     mock_close_something()
 
 
-test_fast_api_app = FastAPI(
-    lifespan=lifespan_fixture
-)
+test_fast_api_app = FastAPI(lifespan=lifespan_fixture)

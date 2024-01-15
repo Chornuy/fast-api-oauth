@@ -1,4 +1,4 @@
-from typing import Any, ClassVar, Type
+from typing import Any, ClassVar
 
 from beanie import Document
 from pydantic._internal._generics import PydanticGenericMetadata
@@ -8,7 +8,6 @@ from app.libs.odm_repository.repository import BaseRepository
 
 
 class DocumentRepositoryMeta(ModelMetaclass):
-
     def __new__(
         mcs,
         cls_name: str,
@@ -32,7 +31,7 @@ class DocumentRepositoryMeta(ModelMetaclass):
                 __pydantic_generic_metadata__,
                 __pydantic_reset_parent_namespace__,
                 _create_model_module,
-                **kwargs
+                **kwargs,
             )
 
         new_cls = new_super(
@@ -43,7 +42,7 @@ class DocumentRepositoryMeta(ModelMetaclass):
             __pydantic_generic_metadata__,
             __pydantic_reset_parent_namespace__,
             _create_model_module,
-            **kwargs
+            **kwargs,
         )
 
         if "repository" in namespace.keys():

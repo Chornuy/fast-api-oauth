@@ -1,10 +1,10 @@
 import typing as t
 
 import asyncclick as click
+from asgi_lifespan import LifespanManager
 from asyncclick import Command
 from asyncclick.core import Context
 from fastapi import FastAPI
-from asgi_lifespan import LifespanManager
 
 from app.libs.app_loader.bootstrap import ApplicationBootStrap
 from app.libs.utils.managment import get_fast_api_app
@@ -14,7 +14,6 @@ pass_fast_api = click.make_pass_decorator(FastAPI)
 
 
 class FastApiCli(click.MultiCommand):
-
     commands = {}
 
     command_class: t.Optional[t.Type[Command]] = None
@@ -71,11 +70,7 @@ class FastApiCli(click.MultiCommand):
         for command_module in command_modules:
             cached_import_module(command_module)
 
-    def main(
-        self,
-        *args,
-        **kwargs
-    ) -> t.Any:
+    def main(self, *args, **kwargs) -> t.Any:
         """Modified main method, starts when creating an object of FastCli class, and call __call__ method
         Examples:
             ```
@@ -92,7 +87,4 @@ class FastApiCli(click.MultiCommand):
 
         """
         self.load_commands(self.bootstrap.context["commands_modules"])
-        return super().main(
-            *args,
-            **kwargs
-        )
+        return super().main(*args, **kwargs)

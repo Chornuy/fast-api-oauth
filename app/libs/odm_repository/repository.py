@@ -1,4 +1,5 @@
-from typing import Type, Union, Mapping, Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Mapping, Type, Union
+
 from beanie import Document
 from beanie.exceptions import DocumentNotFound
 
@@ -7,7 +8,6 @@ if TYPE_CHECKING:
 
 
 class BaseRepository:
-
     __model__: Type[Document] = None
 
     def get_document(self) -> Type[Document]:
@@ -29,9 +29,7 @@ class BaseRepository:
 
         return obj
 
-    async def get_or_create(
-        self, *args: Union[Mapping[str, Any], bool], defaults: dict = None
-    ) -> "DocType":
+    async def get_or_create(self, *args: Union[Mapping[str, Any], bool], defaults: dict = None) -> "DocType":
         defaults = defaults or {}
 
         obj = await self.get_document().find_one(*args)

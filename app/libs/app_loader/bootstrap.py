@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 
 from app.libs.app_loader.middlewares.base import BaseLoaderMiddleware
-from app.libs.app_loader.middlewares.exceptions import SkipMiddlewareException, NotInstanceOfBaseMiddleware
+from app.libs.app_loader.middlewares.exceptions import NotInstanceOfBaseMiddleware, SkipMiddlewareException
 from app.utils.module_loading import import_string
 
 logger = logging.getLogger(__name__)
@@ -11,14 +11,13 @@ logger = logging.getLogger(__name__)
 DEFAULT_LOADER_PIPELINE = [
     "app.libs.app_loader.middlewares.app_loaders:AutoImportAppLoader",
     "app.libs.app_loader.middlewares.beanie:BeanieModelLoader",
-    "app.libs.app_loader.middlewares.click:ClickCommandLoader"
+    "app.libs.app_loader.middlewares.click:ClickCommandLoader",
 ]
 
 
 class BootstrapState:
-    """Helper class to save state of
+    """Helper class to save state of"""
 
-    """
     loaded = False
 
 
@@ -32,7 +31,7 @@ class ApplicationBootStrap:
         config: dict = None,
         ensure: bool = True,
         context: dict = None,
-        loader_pipeline: list[str] = None
+        loader_pipeline: list[str] = None,
     ):
         """
 
@@ -59,10 +58,7 @@ class ApplicationBootStrap:
         Returns:
             dict: dict with basic configs
         """
-        context["bootstrap_config"] = {
-            "app_dir": self.app_dir,
-            "base_dir": self.base_dir
-        }
+        context["bootstrap_config"] = {"app_dir": self.app_dir, "base_dir": self.base_dir}
 
         return context
 
@@ -77,8 +73,7 @@ class ApplicationBootStrap:
 
             if not issubclass(pipeline_cls, BaseLoaderMiddleware):
                 raise NotInstanceOfBaseMiddleware(
-                    f"Got class {pipeline_cls.__class__} "
-                    f"that is not subclass of {BaseLoaderMiddleware.__class__}"
+                    f"Got class {pipeline_cls.__class__} " f"that is not subclass of {BaseLoaderMiddleware.__class__}"
                 )
 
             self._loader_middlewares.append(pipeline_cls)

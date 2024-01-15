@@ -1,4 +1,3 @@
-
 class NotSupportedGrantTypeFlow(Exception):
     pass
 

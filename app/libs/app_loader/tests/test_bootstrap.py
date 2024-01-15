@@ -1,4 +1,4 @@
-from pathlib import PosixPath, Path
+from pathlib import Path, PosixPath
 from typing import Type
 from unittest.mock import call
 
@@ -8,22 +8,25 @@ from pytest_mock import MockerFixture
 from app.libs.app_loader.bootstrap import ApplicationBootStrap
 from app.libs.app_loader.middlewares.exceptions import NotInstanceOfBaseMiddleware
 from app.libs.app_loader.tests.middleware_fixtures import FixtureTestMiddleware, FixtureTestResultAfterTestMiddleware
-from app.libs.app_loader.tests.pipeline_fixutres import success_flow_pipeline, skip_pipeline, broken_pipeline, \
-    not_implemented_method_pipeline
+from app.libs.app_loader.tests.pipeline_fixutres import (
+    broken_pipeline,
+    not_implemented_method_pipeline,
+    skip_pipeline,
+    success_flow_pipeline,
+)
 
 
 def side_effect_first_pipeline(context: dict, config: dict) -> dict:
-    context['first_pipeline_result'] = "ok"
+    context["first_pipeline_result"] = "ok"
     return context
 
 
 def side_effect_second_pipeline(context: dict, config: dict) -> dict:
-    context['side_effect_second_pipeline'] = "ok"
+    context["side_effect_second_pipeline"] = "ok"
     return context
 
 
 class BootstrapFixtures:
-
     @pytest.fixture
     def application_bootstrap_cls(self):
         return ApplicationBootStrap
@@ -51,18 +54,13 @@ class BootstrapFixtures:
         self, application_bootstrap_cls: Type[ApplicationBootStrap]
     ) -> ApplicationBootStrap:
         return application_bootstrap_cls(
-            base_dir=Path(""), app_dir=Path(""),
-            loader_pipeline=not_implemented_method_pipeline
+            base_dir=Path(""), app_dir=Path(""), loader_pipeline=not_implemented_method_pipeline
         )
 
 
 class TestBaseFunctionality(BootstrapFixtures):
-
     def test_bootstrap_imports(self, application_bootstrap_working: ApplicationBootStrap) -> None:
-        expected_classes_name = [
-            FixtureTestMiddleware.__name__,
-            FixtureTestResultAfterTestMiddleware.__name__
-        ]
+        expected_classes_name = [FixtureTestMiddleware.__name__, FixtureTestResultAfterTestMiddleware.__name__]
 
         application_bootstrap_working.load()
 
@@ -70,7 +68,6 @@ class TestBaseFunctionality(BootstrapFixtures):
             assert middleware.__name__ in expected_classes_name
 
     def test_bootstrap_success_flow(self, application_bootstrap_working: ApplicationBootStrap) -> None:
-
         assert application_bootstrap_working._state.loaded is False
 
         application_bootstrap_working.load()
@@ -88,15 +85,14 @@ class TestBaseFunctionality(BootstrapFixtures):
         mocker: MockerFixture,
         application_bootstrap_working: ApplicationBootStrap,
     ):
-
         first_middleware_mock = mocker.patch(
-            'app.core.app_loader.tests.middleware_fixtures.FixtureTestMiddleware.load',
-            side_effect=side_effect_first_pipeline
+            "app.libs.app_loader.tests.middleware_fixtures.FixtureTestMiddleware.load",
+            side_effect=side_effect_first_pipeline,
         )
 
         second_middleware_mock = mocker.patch(
-            'app.core.app_loader.tests.middleware_fixtures.FixtureTestResultAfterTestMiddleware.load',
-            side_effect=side_effect_second_pipeline
+            "app.libs.app_loader.tests.middleware_fixtures.FixtureTestResultAfterTestMiddleware.load",
+            side_effect=side_effect_second_pipeline,
         )
 
         mock_parent = mocker.Mock()
@@ -108,29 +104,21 @@ class TestBaseFunctionality(BootstrapFixtures):
         mock_parent.assert_has_calls(
             [
                 call.first_pipeline(
-                    context=
-                    {
-                        'bootstrap_config':
-                            {
-                                'app_dir': PosixPath(''),
-                                'base_dir': PosixPath('')
-                            },
-                        'first_pipeline_result': 'ok',
-                        'side_effect_second_pipeline': 'ok'
+                    context={
+                        "bootstrap_config": {"app_dir": PosixPath(""), "base_dir": PosixPath("")},
+                        "first_pipeline_result": "ok",
+                        "side_effect_second_pipeline": "ok",
                     },
-                    config={}
+                    config={},
                 ),
                 call.second_pipeline(
                     context={
-                        'bootstrap_config': {
-                            'app_dir': PosixPath(''),
-                            'base_dir': PosixPath('')
-                        },
-                        'first_pipeline_result': 'ok',
-                        'side_effect_second_pipeline': 'ok'
+                        "bootstrap_config": {"app_dir": PosixPath(""), "base_dir": PosixPath("")},
+                        "first_pipeline_result": "ok",
+                        "side_effect_second_pipeline": "ok",
                     },
-                    config={}
-                )
+                    config={},
+                ),
             ]
         )
 
@@ -156,4 +144,3 @@ class TestBaseFunctionality(BootstrapFixtures):
 
         assert "testing_result_another" in application_loader_with_skip_middleware.context.keys()
         assert application_loader_with_skip_middleware.context["testing_result_another"] == "ok.ok"
-

@@ -1,12 +1,12 @@
 from datetime import datetime
 from enum import Enum
-from typing import Annotated, Optional, ClassVar
+from typing import Annotated, ClassVar, Optional
 
-from beanie import Indexed, before_event, Insert, Update
-from pydantic import Field, EmailStr
+from beanie import Indexed, Insert, Update, before_event
+from pydantic import EmailStr, Field
 
 from app.apps.user.repository import UserRepository
-from app.core.auth.password_generator import verify_password, make_password
+from app.core.auth.password_generator import make_password, verify_password
 from app.libs.odm_repository.metadata import DocumentRepository
 
 
@@ -16,7 +16,6 @@ class UserRoles(str, Enum):
 
 
 class User(DocumentRepository):
-
     name: Optional[str | None] = Field(max_length=200, default=None)
     email: Annotated[EmailStr, Indexed(unique=True)] = Field(max_length=200)
     password: str = Field(max_length=200)

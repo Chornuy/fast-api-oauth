@@ -17,16 +17,10 @@ async def send_verification_email(email: str, verification_token_url: str) -> No
 
     """
     conf = get_email_conf(template_path=templates_path)
-    body = {
-        "verification_token_url": verification_token_url
-    }
+    body = {"verification_token_url": verification_token_url}
 
     return await send_email_async(
-        subject=VERIFICATION_SUBJECT,
-        template_name="email.html",
-        conf=conf,
-        email_to=email,
-        body=body
+        subject=VERIFICATION_SUBJECT, template_name="email.html", conf=conf, email_to=email, body=body
     )
 
 
@@ -41,14 +35,8 @@ async def send_reset_password_email(email: str, reset_password_token_url: str) -
 
     """
     conf = get_email_conf(template_path=templates_path)
-    body = {
-        "reset_password_token_url": reset_password_token_url
-    }
+    body = {"reset_password_token_url": reset_password_token_url}
 
     return await send_email_async(
-        subject=VERIFICATION_SUBJECT,
-        template_name="reset_password.html",
-        conf=conf,
-        email_to=email,
-        body=body
+        subject=VERIFICATION_SUBJECT, template_name="reset_password.html", conf=conf, email_to=email, body=body
     )

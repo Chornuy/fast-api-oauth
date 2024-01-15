@@ -1,8 +1,7 @@
 import inspect
-from typing import Annotated, Type
+from typing import Annotated
 
 from fastapi import Form
-from pydantic import BaseModel
 
 
 def as_form(cls):

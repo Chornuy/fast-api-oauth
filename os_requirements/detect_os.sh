@@ -24,4 +24,3 @@ function detect_os_by_release() {
     echo >&2 -e "Could not detect supporting OS for installing dependecies \n"
     exit 0
 }
-

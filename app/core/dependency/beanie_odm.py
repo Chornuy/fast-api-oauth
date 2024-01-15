@@ -5,7 +5,7 @@ from beanie import init_beanie
 from pydantic import BaseModel
 
 
-async def init_beanie_db(settings: Type[BaseModel],  models_list: list):
+async def init_beanie_db(settings: Type[BaseModel], models_list: list):
     """
 
     Args:

@@ -1,3 +1,2 @@
-
 class TokenException(Exception):
     pass

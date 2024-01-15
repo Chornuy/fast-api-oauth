@@ -8,5 +8,5 @@ CONFIG_MODULE = os.environ.setdefault("CONFIG_MODULE", "app.settings.base")
 
 fast_api_cli = get_fast_api_cli()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     fast_api_cli()

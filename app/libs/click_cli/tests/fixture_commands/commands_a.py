@@ -1,4 +1,5 @@
 import asyncclick as click
+
 from app.libs.click_cli.tests.fixture_commands.fixture_fast_api_cli import fast_api_cli_test
 
 
@@ -33,4 +34,3 @@ def not_fast_api_command():
 
 async def async_not_fast_api_command():
     pass
-

@@ -1,9 +1,9 @@
 import typing as t
 
 import asyncclick as click
+from asgi_lifespan import LifespanManager
 from asyncclick.core import Context
 from fastapi import FastAPI
-from asgi_lifespan import LifespanManager
 
 from app.libs.app_loader.bootstrap import ApplicationBootStrap
 from app.libs.click_cli.base import MultiCommandBase
@@ -13,7 +13,6 @@ pass_fast_api = click.make_pass_decorator(FastAPI)
 
 
 class FastApiCliBootStrap(MultiCommandBase):
-
     def __init__(self, bootstrap: ApplicationBootStrap, *args, **attrs):
         """Overriding init for injecting helper object of ApplicationBootStrap class.
         ApplicationBootStrap, helps to autodiscover modules with possible commands list.
@@ -55,11 +54,7 @@ class FastApiCliBootStrap(MultiCommandBase):
             rv = await super().invoke(ctx)
         return rv
 
-    def main(
-        self,
-        *args,
-        **kwargs
-    ) -> t.Any:
+    def main(self, *args, **kwargs) -> t.Any:
         """Modified main method, starts when creating an object of FastCli class, and call __call__ method
         Examples:
             ```
@@ -76,7 +71,4 @@ class FastApiCliBootStrap(MultiCommandBase):
 
         """
         self.load_commands(self.bootstrap.context["commands_modules"])
-        return super().main(
-            *args,
-            **kwargs
-        )
+        return super().main(*args, **kwargs)

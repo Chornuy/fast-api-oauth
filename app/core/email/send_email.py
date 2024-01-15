@@ -1,4 +1,4 @@
-from fastapi_mail import MessageSchema, FastMail, ConnectionConfig
+from fastapi_mail import ConnectionConfig, FastMail, MessageSchema
 
 
 async def send_email_async(
@@ -19,10 +19,8 @@ async def send_email_async(
     message = MessageSchema(
         subject=subject,
         recipients=[email_to],
-        template_body={
-            "body": body
-        },
-        subtype='html',
+        template_body={"body": body},
+        subtype="html",
     )
 
     fm = FastMail(conf)

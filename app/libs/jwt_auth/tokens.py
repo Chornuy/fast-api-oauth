@@ -1,15 +1,14 @@
+from datetime import datetime, timedelta
 from uuid import uuid4
 
-from datetime import timedelta, datetime
-from jose import jwt, JOSEError
+from jose import JOSEError, jwt
 
 from app.core.security.jwt import ALGORITHM
-from app.libs.utils.datetime import datetime_to_epoch, datetime_from_epoch
+from app.libs.utils.datetime import datetime_from_epoch, datetime_to_epoch
 from app.settings.settings import settings
 
 
 class Token:
-
     lifetime = None
     token_type = None
     leeway = 0
@@ -125,13 +124,11 @@ class Token:
 
 
 class AccessToken(Token):
-
     token_type = "access"
     lifetime = timedelta(minutes=30)
 
 
 class RefreshToken(Token):
-
     token_type = "refresh"
     lifetime = timedelta(days=30)
     access_token_class = AccessToken

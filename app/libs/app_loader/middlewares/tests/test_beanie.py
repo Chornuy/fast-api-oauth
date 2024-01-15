@@ -1,31 +1,37 @@
 import pytest
 
 from app.libs.app_loader.middlewares.beanie import BeanieModelLoader
-from app.libs.app_loader.middlewares.tests.fixture_beanie.app_a.models import Vehicle, Bike, Car, Metrics, One, Parent, Two, Owner
+from app.libs.app_loader.middlewares.tests.fixture_beanie.app_a.models import (
+    Bike,
+    Car,
+    Metrics,
+    One,
+    Owner,
+    Parent,
+    Two,
+    Vehicle,
+)
 
 
 class TestBeanieLoader:
-
     @staticmethod
     def get_expected_models():
         return [
-           Bike.__name__,
-           Car.__name__,
-           Metrics.__name__,
-           One.__name__,
-           Owner.__name__,
-           Parent.__name__,
-           Two.__name__,
-           Vehicle.__name__,
+            Bike.__name__,
+            Car.__name__,
+            Metrics.__name__,
+            One.__name__,
+            Owner.__name__,
+            Parent.__name__,
+            Two.__name__,
+            Vehicle.__name__,
         ]
 
     @staticmethod
     def get_fixture_config_for_app_a():
         return {
             "apps": {
-                "app_a": {
-                    "module_path": "app.core.app_loader.middlewares.tests.fixture_beanie.app_a"
-                },
+                "app_a": {"module_path": "app.libs.app_loader.middlewares.tests.fixture_beanie.app_a"},
             }
         }
 
@@ -33,10 +39,7 @@ class TestBeanieLoader:
     def get_fixture_config_for_app_b():
         return {
             "apps": {
-                "app_b": {
-                    "module_path": "app.core.app_loader.middlewares.tests.fixture_beanie.app_b"
-
-                },
+                "app_b": {"module_path": "app.libs.app_loader.middlewares.tests.fixture_beanie.app_b"},
             }
         }
 
@@ -44,10 +47,7 @@ class TestBeanieLoader:
     def get_fixture_config_for_app_c():
         return {
             "apps": {
-                "app_b": {
-                    "module_path": "app.core.app_loader.middlewares.tests.fixture_beanie.app_c"
-
-                },
+                "app_b": {"module_path": "app.libs.app_loader.middlewares.tests.fixture_beanie.app_c"},
             }
         }
 

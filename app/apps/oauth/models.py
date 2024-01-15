@@ -13,7 +13,6 @@ DEFAULT_CODE_TIMEOUT = timedelta(hours=1)
 
 
 class JwtToken(DocumentRepository):
-
     # Unique id of Jwt token
     jti: Annotated[str, Indexed(unique=True)]
 
@@ -36,7 +35,6 @@ class JwtToken(DocumentRepository):
 
 
 class OAuthCode(DocumentRepository):
-
     # Unique code for obtaining access token
     code: Annotated[str, Indexed(unique=True)] = generate_token()
 
@@ -63,7 +61,7 @@ class OAuthCode(DocumentRepository):
         return self.user
 
     def is_expire(self, datetime_obj: datetime = datetime.now()) -> bool:
-        """ Check if auth code is expired
+        """Check if auth code is expired
 
         Args:
             datetime_obj (datetime): datetime object based on which will be checked token
@@ -90,4 +88,3 @@ class OAuthCode(DocumentRepository):
             return False
 
         return True
-

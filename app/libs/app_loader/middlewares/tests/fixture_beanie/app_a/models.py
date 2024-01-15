@@ -1,11 +1,10 @@
-from typing import Optional, List
+from typing import List, Optional
 
 from beanie import Document, Link, UnionDoc, View
 from pydantic import BaseModel, Field
 
 
 class Vehicle(Document):
-
     color: str
 
     class Settings:
@@ -14,6 +13,7 @@ class Vehicle(Document):
 
 class Fuelled(BaseModel):
     """Just a mixin"""
+
     fuel: Optional[str]
 
 
@@ -62,11 +62,5 @@ class Metrics(View):
     class Settings:
         source = Bike
         pipeline = [
-            {
-                "$group": {
-                    "_id": "$type",
-                    "number": {"$sum": 1},
-                    "new": {"$sum": {"$cond": ["$is_new", 1, 0]}}
-                }
-            },
+            {"$group": {"_id": "$type", "number": {"$sum": 1}, "new": {"$sum": {"$cond": ["$is_new", 1, 0]}}}},
         ]

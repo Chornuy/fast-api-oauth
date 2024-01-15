@@ -24,6 +24,6 @@ def get_email_conf(template_path: str) -> ConnectionConfig:
         MAIL_STARTTLS=settings.MAIL_STARTTLS,
         TIMEOUT=10,
         MAIL_DEBUG=True,
-        TEMPLATE_FOLDER=template_path
+        TEMPLATE_FOLDER=template_path,
     )
     return conf

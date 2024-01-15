@@ -1,10 +1,9 @@
 from typing import Any
 
-from app.libs.jwt_auth.tokens import RefreshToken, AccessToken, UntypedToken, Token
+from app.libs.jwt_auth.tokens import AccessToken, RefreshToken, Token, UntypedToken
 
 
 class BaseTokenManager:
-
     async def transform_token(self, token: Token) -> Any:
         raise NotImplementedError("Black list should be implemented")
 
@@ -37,7 +36,7 @@ class RefreshTokenManager(BaseTokenManager):
         return {
             "refresh_token": str(refresh_token),
             "access_token": str(access_token),
-            "expires_in": access_token["exp"]
+            "expires_in": access_token["exp"],
         }
 
     async def refresh_token(self, token: str) -> dict[str, str]:
@@ -52,10 +51,7 @@ class RefreshTokenManager(BaseTokenManager):
 
         refresh_token = self.refresh_token_class(token)
         access_token = refresh_token.access_token
-        return {
-            "access_token": str(access_token),
-            "expires_in": access_token["exp"]
-        }
+        return {"access_token": str(access_token), "expires_in": access_token["exp"]}
 
     async def decode_token(self, token: str) -> Any:
         """

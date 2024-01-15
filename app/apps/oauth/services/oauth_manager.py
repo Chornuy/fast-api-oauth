@@ -14,15 +14,9 @@ class OauthFlowManager(BaseOauthFlowManager):
 
     grant_type_key = "grant_type"
 
-    supported_grant_types = [
-        GrantTypeEnum.authorization_code.value,
-        GrantTypeEnum.refresh_token.value
-    ]
+    supported_grant_types = [GrantTypeEnum.authorization_code.value, GrantTypeEnum.refresh_token.value]
 
-    grant_types_processing = {
-        GrantTypeEnum.authorization_code.value: "",
-        GrantTypeEnum.refresh_token.value: ""
-    }
+    grant_types_processing = {GrantTypeEnum.authorization_code.value: "", GrantTypeEnum.refresh_token.value: ""}
 
     async def refresh_token(self, refresh_token: str):
         """

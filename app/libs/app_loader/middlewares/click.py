@@ -1,21 +1,17 @@
-from pathlib import Path, PosixPath
+from pathlib import Path
 
 from app.libs.app_loader.middlewares.base import BaseLoaderMiddleware
 from app.libs.app_loader.middlewares.exceptions import RuntimeMiddlewareException
 
 
 class ClickCommandLoader(BaseLoaderMiddleware):
-    """Class helper to load all commands that was registered inside apps struct
-
-    """
+    """Class helper to load all commands that was registered inside apps struct"""
 
     commands_patter = r"commands/[!__init__]*.py"
     commands_module_name = "commands"
 
     # Additional commands that not a part of application itself
-    additional_cli_modules = [
-        "app.libs.system_app.commands.fast_api_commands"
-    ]
+    additional_cli_modules = ["app.libs.system_app.commands.fast_api_commands"]
 
     def get_python_files_commands(self, app_folder_path: str) -> list[Path]:
         """Load all files that was registered inside commands module.
@@ -40,7 +36,7 @@ class ClickCommandLoader(BaseLoaderMiddleware):
         return list(Path(app_folder_path).glob(self.commands_patter))
 
     def command_paths_to_module_str(self, base_dir: Path, command_paths: list[Path]) -> list[str]:
-        """ Convert file path to python module import str
+        """Convert file path to python module import str
         Examples:
             commands_list = ["apps/user/commands/user_management.py", "apps/user/commands/create_superuser.py"]
             will transform to ["apps.user.commands.user_management", "apps.user.commands.create_superuser"]
@@ -54,9 +50,8 @@ class ClickCommandLoader(BaseLoaderMiddleware):
         """
 
         return [
-            self.python_file_path_to_module_path(
-                base_dir=base_dir, app_folder=str(commands_file)
-            ) for commands_file in command_paths
+            self.python_file_path_to_module_path(base_dir=base_dir, app_folder=str(commands_file))
+            for commands_file in command_paths
         ]
 
     def load(self, context: dict, config: dict) -> dict:

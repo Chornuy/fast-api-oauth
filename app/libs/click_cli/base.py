@@ -2,13 +2,12 @@ import typing as t
 
 import asyncclick as click
 from asyncclick import Command
-from asyncclick.core import _check_multicommand, Context
+from asyncclick.core import Context, _check_multicommand
 
 from app.utils.module_loading import cached_import_module
 
 
 class MultiCommandBase(click.MultiCommand):
-
     commands = {}
 
     command_class: t.Optional[t.Type[Command]] = None
@@ -36,9 +35,7 @@ class MultiCommandBase(click.MultiCommand):
         _check_multicommand(self, name, cmd, register=True)
         self.commands[name] = cmd
 
-    def command(
-        self, *args, **kwargs
-    ) -> t.Callable:
+    def command(self, *args, **kwargs) -> t.Callable:
         """Logic was taken from Group class of click library. Helps to register commands inside FastCli class
 
         Args:
@@ -49,15 +46,14 @@ class MultiCommandBase(click.MultiCommand):
             Callable: decorator that register command
         """
         from asyncclick import command
+
         if self.command_class and kwargs.get("cls") is None:
             kwargs["cls"] = self.command_class
 
         func: t.Optional[t.Callable] = None
 
         if args and callable(args[0]):
-            assert (
-                len(args) == 1 and not kwargs
-            ), "Use 'command(**kwargs)(callable)' to provide arguments."
+            assert len(args) == 1 and not kwargs, "Use 'command(**kwargs)(callable)' to provide arguments."
             (func,) = args
             args = ()
 
@@ -72,7 +68,7 @@ class MultiCommandBase(click.MultiCommand):
         return decorator
 
     def get_command(self, ctx: Context, name: str) -> Command | None:
-        """ Method get command that was registered by decorator
+        """Method get command that was registered by decorator
 
         Args:
             ctx (Context): click context object
@@ -87,7 +83,7 @@ class MultiCommandBase(click.MultiCommand):
             return None
 
     def list_commands(self, ctx: Context) -> t.List[str]:
-        """ Return a list of commands, after importing all modules that contains commands decorator
+        """Return a list of commands, after importing all modules that contains commands decorator
 
         Args:
             ctx (Context):

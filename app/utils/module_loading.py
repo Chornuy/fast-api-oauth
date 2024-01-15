@@ -4,7 +4,7 @@ import sys
 from importlib import import_module
 from importlib.util import find_spec
 from types import ModuleType
-from typing import Type, Any
+from typing import Any, Type
 
 
 def get_module_subclasses(models_module: ModuleType, base_cls_list: tuple) -> list[tuple[str, Type]]:
@@ -19,11 +19,8 @@ def get_module_subclasses(models_module: ModuleType, base_cls_list: tuple) -> li
     """
 
     def func(element):
-        return (
-            inspect.isclass(element)
-            and issubclass(element, base_cls_list)
-            and element not in base_cls_list
-        )
+        return inspect.isclass(element) and issubclass(element, base_cls_list) and element not in base_cls_list
+
     return inspect.getmembers(models_module, func)
 
 

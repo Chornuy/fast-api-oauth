@@ -2,7 +2,6 @@ from app.libs.click_cli.tests.fixture_commands.fixture_fast_api_cli import fast_
 
 
 class SomeClass:
-
     def __init__(self):
         self.name = "test"
 
@@ -23,4 +22,3 @@ async def command_b_one():
 async def command_b_two():
     some_class = SomeClass()
     return some_class.some_func()
-

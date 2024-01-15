@@ -2,7 +2,6 @@ from pathlib import Path
 
 
 class BaseLoaderMiddleware:
-
     @staticmethod
     def python_file_path_to_module_path(base_dir: Path, app_folder: str) -> str:
         """Method convert system path to python module to import module str.
@@ -24,9 +23,7 @@ class BaseLoaderMiddleware:
         Returns:
             str: Import module str, like 'app.apps.user'
         """
-        return app_folder.replace(str(base_dir), "") \
-            .replace("/", ".") \
-            .replace(".py", "")[1:]
+        return app_folder.replace(str(base_dir), "").replace("/", ".").replace(".py", "")[1:]
 
     def load(self, context: dict, config: dict):
         raise NotImplementedError("Method Load should be implemented")

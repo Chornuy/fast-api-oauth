@@ -1,6 +1,5 @@
 from fastapi import APIRouter
 
-
 from app.apps.user.api import endpoints
 from app.apps.user.app import app_name
 

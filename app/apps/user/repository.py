@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING
 
-
 from app.libs.odm_repository.exceptions import ObjectNotFound
 from app.libs.odm_repository.repository import BaseRepository
 
@@ -9,7 +8,6 @@ if TYPE_CHECKING:
 
 
 class UserRepository(BaseRepository):
-
     async def ger_user_by_email(self, email: str):
         """
 

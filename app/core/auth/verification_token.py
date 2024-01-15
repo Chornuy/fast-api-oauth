@@ -1,9 +1,9 @@
-from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
+from itsdangerous import BadTimeSignature, SignatureExpired, URLSafeTimedSerializer
 from pydantic import EmailStr
 
 from app.settings.settings import settings
 
-token_algo = URLSafeTimedSerializer(settings.SECRET_KEY, salt='Email_Verification_&_Forgot_password')
+token_algo = URLSafeTimedSerializer(settings.SECRET_KEY, salt="Email_Verification_&_Forgot_password")
 
 
 def create_token(email: EmailStr) -> str | bytes:

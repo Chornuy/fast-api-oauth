@@ -4,22 +4,20 @@ from typing import List, Tuple, Type, TypeVar
 from beanie import Document, UnionDoc, View
 
 from app.libs.app_loader.middlewares.base import BaseLoaderMiddleware
-from app.utils.module_loading import cached_import_module, module_has_submodule, get_module_subclasses
+from app.utils.module_loading import cached_import_module, get_module_subclasses, module_has_submodule
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 class BeanieModelLoader(BaseLoaderMiddleware):
-    """Class helper to load from apps models
-
-    """
+    """Class helper to load from apps models"""
 
     models_module_name = "models"
 
     beanie_models_cls = (Document, UnionDoc, View)
 
     def check_has_models(self, module_path: str) -> bool:
-        """ Method check if python app module has a submodule with models.py inside
+        """Method check if python app module has a submodule with models.py inside
         If it has it, this is our target to autoload models from app module
 
         Args:
@@ -45,7 +43,7 @@ class BeanieModelLoader(BaseLoaderMiddleware):
         return get_module_subclasses(models_module, self.beanie_models_cls)
 
     def load(self, context: dict, config: dict) -> dict:
-        """ Autoloads Beanie models that stored inside models module, of applications modules
+        """Autoloads Beanie models that stored inside models module, of applications modules
 
         Args:
             config (dict): Base config of bootstrap class
@@ -63,5 +61,5 @@ class BeanieModelLoader(BaseLoaderMiddleware):
                 model_list.extend(models)
 
         model_list = [model_cls for _, model_cls in model_list]
-        context['beanie_models'] = model_list
+        context["beanie_models"] = model_list
         return context

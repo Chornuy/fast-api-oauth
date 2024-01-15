@@ -1,11 +1,11 @@
 import os
 
-import uvicorn
-from fastapi import FastAPI, APIRouter
 import asyncclick as click
-from app.libs.click_cli.bootstrap_cli import pass_fast_api
-from app.libs.utils.managment import get_fast_api_cli, FAST_API_APP_ENV_NAME
+import uvicorn
+from fastapi import APIRouter, FastAPI
 
+from app.libs.click_cli.bootstrap_cli import pass_fast_api
+from app.libs.utils.managment import FAST_API_APP_ENV_NAME, get_fast_api_cli
 
 fast_api_cli = get_fast_api_cli()
 
@@ -14,7 +14,6 @@ fast_api_cli = get_fast_api_cli()
 @pass_fast_api
 async def show_urls(fast_api: FastAPI):
     for route in fast_api.routes:
-
         methods = ",".join(route.methods)
         tags_str = ""
         if isinstance(route, APIRouter):

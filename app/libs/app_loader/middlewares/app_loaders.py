@@ -10,9 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 class AutoImportAppLoader(BaseLoaderMiddleware):
-    """Class helper to load a basic list apps with their
-
-    """
+    """Class helper to load a basic list apps with their"""
 
     app_name_attr_name = "app_name"
     app_python_file_name = "app.py"
@@ -43,7 +41,7 @@ class AutoImportAppLoader(BaseLoaderMiddleware):
         Returns:
             list: list of apps that contains app.py inside
         """
-        return glob.glob(fr"{app_dir}/{self.application_patter}")
+        return glob.glob(rf"{app_dir}/{self.application_patter}")
 
     def load_apps(self, base_dir: Path, app_folders: list) -> dict[str, dict]:
         """Register system data for each app, to make easy loading of another pipelines
@@ -113,12 +111,12 @@ class AutoImportAppLoader(BaseLoaderMiddleware):
         app_name = cached_import_class(app_module, self.app_name_attr_name)
 
         module_name = self.app_python_file_name.replace(".py", "")
-        app_module_path = app_module[:-len(f".{module_name}")]
+        app_module_path = app_module[: -len(f".{module_name}")]
 
         return {
             "name": app_name,
             "module_path": app_module_path,
-            "folder_path":  Path(app_folder.replace(self.app_python_file_name, ""))
+            "folder_path": Path(app_folder.replace(self.app_python_file_name, "")),
         }
 
     def load(self, context: dict, config: dict) -> dict:

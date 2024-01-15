@@ -1,11 +1,10 @@
-from typing import Optional, List
+from typing import List, Optional
 
 from beanie import Document, Link
 from pydantic import BaseModel
 
 
 class Vehicle(Document):
-
     color: str
 
     class Settings:
@@ -14,6 +13,7 @@ class Vehicle(Document):
 
 class Fuelled(BaseModel):
     """Just a mixin"""
+
     fuel: Optional[str]
 
 
