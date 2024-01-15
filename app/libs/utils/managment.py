@@ -1,5 +1,5 @@
 import os
-from typing import Type, Any
+from typing import Type
 
 from app.utils.module_loading import cached_import_class
 
@@ -60,4 +60,3 @@ def get_fast_api_app(fast_api_import_str: str | None = None) -> Type["FastAPI"]:
     """
     fast_api_import_str = fast_api_import_str or FAST_API_APP_DEFAULT_PATH
     return get_app_by_env_str(FAST_API_APP_ENV_NAME, fast_api_import_str)
-

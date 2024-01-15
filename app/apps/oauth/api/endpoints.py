@@ -53,7 +53,6 @@ async def revoke(
 async def me(
     token: Annotated[str, Depends(oauth2_auth_code_scheme)]
 ):
-    print(token)
     return {"status": "ok"}
 
 

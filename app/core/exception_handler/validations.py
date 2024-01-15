@@ -21,7 +21,6 @@ def transform_errors(errors: Sequence[Any]) -> list:
     return errors_response
 
 
-VALIDATION_STATUS_CODE = 400
 VALIDATION_STATUS_MESSAGE = "Request contain errors in data"
 
 
@@ -39,7 +38,7 @@ async def request_validation_exception_handler(
     """
     errors_fields_response = transform_errors(exc.errors())
     error_dict = {
-        "status_code": VALIDATION_STATUS_CODE,
+        "status_code": HTTP_400_BAD_REQUEST,
         "message": VALIDATION_STATUS_MESSAGE
     }
     if errors_fields_response:

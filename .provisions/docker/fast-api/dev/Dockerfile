@@ -56,18 +56,7 @@ RUN pipenv sync --dev
 # Python 'run' stage
 FROM base as python-run-stage
 
-#COPY --from=python-build-stage /.venv /.venv
-#ENV PATH="/.venv/bin:$PATH"
-
-
 WORKDIR ${APP_PATH}
-
-# explicitly set user/group IDs
-#RUN set -eux; \
-#	groupadd -r ${GROUP_NAME} --gid=${GROUP_GID}; \
-#	useradd -r ${USER_NAME} -g ${GROUP_NAME} --home-dir=${HOME_DIR} --uid=${USER_UID}; \
-#    mkdir -p ${HOME_DIR} ; \
-#	chown -R ${USER_NAME}:${GROUP_NAME} ${HOME_DIR}
 
 # Install required system dependencies
 RUN apt-get update && apt-get install --no-install-recommends -y \
@@ -106,15 +95,6 @@ RUN set -eux; \
 	chmod +x /usr/local/bin/gosu; \
 	gosu --version; \
 	gosu nobody true
-
-
-# All absolute dir copies ignore workdir instruction. All relative dir copies are wrt to the workdir instruction
-# copy python dependency wheels from python-build-stage
-#COPY --from=python-build-stage /usr/src/app/wheels  /wheels/
-
-# use wheels to install python dependencies
-#RUN pip install --no-cache-dir --no-index --find-links=/wheels/ /wheels/* \
-#	&& rm -rf /wheels/
 
 
 COPY --chmod=755 .provisions/docker/fast-api/dev/docker-entrypoint.sh /usr/local/bin/
