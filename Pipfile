@@ -23,6 +23,7 @@ passlib = {extras = ["bcrypt"], version = "*"}
 python-jose = {extras = ["cryptography"], version = "*"}
 python-multipart = "*"
 pyotp = "*"
+polyfactory = "*"
 
 [dev-packages]
 coverage = "*"
@@ -34,6 +35,8 @@ black = "*"
 flake8 = "*"
 pre-commit = "*"
 watchfiles = "*"
+polyfactory = "*"
+pytest-asyncio = "*"
 
 [requires]
 python_version = "3.11"

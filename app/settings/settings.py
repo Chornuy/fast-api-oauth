@@ -1,5 +1,5 @@
 import pathlib
-from functools import lru_cache
+from urllib.parse import urlencode
 
 from pydantic import Extra, MongoDsn, RedisDsn, model_validator
 from pydantic_settings import BaseSettings
@@ -36,10 +36,14 @@ class Settings(BaseSettings):
     MONGO_DB_PORT: int | None = 0
     MONGO_DB_NAME: str = ""
 
+    MONGO_DB_AUTH_SOURCE: str = "admin"
+
     ALLOWED_ORIGINS: list = [""]
 
     @model_validator(mode="after")
     def assemble_db_connection(self):
+        query_params = {"authSource": self.MONGO_DB_AUTH_SOURCE}
+
         mongo_str = MongoDsn.build(
             scheme=self.MONGO_DB_SCHEME,
             username=self.MONGO_DB_USER,
@@ -47,6 +51,7 @@ class Settings(BaseSettings):
             host=self.MONGO_DB_HOST,
             port=self.MONGO_DB_PORT,
             path=f"{self.MONGO_DB_NAME or ''}",
+            query=urlencode(query_params),
         )
         self.MONGO_URL = mongo_str
         return self
@@ -98,11 +103,6 @@ class Settings(BaseSettings):
         case_sensitive = True
         env_file = ".env"
         extra = Extra.ignore
-
-
-@lru_cache
-def get_settings():
-    return Settings()
 
 
 settings = Settings()

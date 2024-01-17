@@ -1,4 +1,4 @@
-use fast-api-websocket
+use fastApi
 db.createUser(
   {
     user: "fast-api",

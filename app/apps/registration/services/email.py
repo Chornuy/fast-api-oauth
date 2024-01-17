@@ -20,7 +20,7 @@ async def send_verification_email(email: str, verification_token_url: str) -> No
     body = {"verification_token_url": verification_token_url}
 
     return await send_email_async(
-        subject=VERIFICATION_SUBJECT, template_name="email.html", conf=conf, email_to=email, body=body
+        subject=VERIFICATION_SUBJECT, template_name="verify_email.html", conf=conf, email_to=email, body=body
     )
 
 

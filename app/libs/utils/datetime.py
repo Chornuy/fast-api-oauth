@@ -1,5 +1,5 @@
 from calendar import timegm
-from datetime import datetime, timezone
+from datetime import datetime
 
 
 def datetime_to_epoch(dt):
