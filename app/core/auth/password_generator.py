@@ -7,10 +7,10 @@ def make_password(password: str) -> str:
     """
 
     Args:
-        password:
+        password (str):
 
     Returns:
-
+        str:
     """
     return pwd_context.hash(password)
 

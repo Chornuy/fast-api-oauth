@@ -59,7 +59,7 @@ def get_settings(settings_import_str: str | None = None) -> Type[BaseModel]:
     return get_app_by_env_str(FAST_API_SETTINGS_DEFAULT_PATH, fast_api_cli_import_str)()
 
 
-def get_fast_api_cli(fast_api_cli_import_str: str | None = None) -> Type["FastApiCli"]:
+def get_fast_api_cli(fast_api_cli_import_str: str | None = None) -> "FastApiCli":
     """Return FastApiCli instance by import str
     Examples:
         Code above will return FastApiCli object
@@ -75,7 +75,7 @@ def get_fast_api_cli(fast_api_cli_import_str: str | None = None) -> Type["FastAp
     return get_app_by_env_str(FAST_API_CLI_ENV_NAME, fast_api_cli_import_str)
 
 
-def get_fast_api_app(fast_api_import_str: str | None = None) -> Type["FastAPI"]:
+def get_fast_api_app(fast_api_import_str: str | None = None) -> "FastAPI":
     """Return FastApiCli instance by import str
     Examples:
         Code above will return FastAPI object
