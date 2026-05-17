@@ -9,7 +9,6 @@ from pymongo.asynchronous.client_session import AsyncClientSession
 from pytest_mock import MockerFixture
 
 from app.libs.beanie_odm_ext.session import WireSession
-from app.libs.beanie_odm_ext.tests.fixtures.click_async import TEST_FAST_API_STR
 from app.libs.beanie_odm_ext.tests.fixtures.models import Product, Category
 from app.libs.beanie_odm_ext.transaction import Atomic
 from app.libs.managment import get_fast_api_app
@@ -33,7 +32,7 @@ class TestFastApiMiddleWareIntegration:
 
     @pytest_asyncio.fixture
     async def fast_api_app(self) -> AsyncGenerator[FastAPI, None]:
-        fast_api_app = get_fast_api_app(TEST_FAST_API_STR)
+        fast_api_app = get_fast_api_app("app.libs.beanie_odm_ext.fastapi.tests.fixture.fast_api:test_fast_api_app")
         async with LifespanManager(fast_api_app, startup_timeout=100, shutdown_timeout=100):
             yield fast_api_app
 
