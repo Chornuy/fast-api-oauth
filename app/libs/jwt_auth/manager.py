@@ -7,19 +7,17 @@ class BaseTokenManager:
     async def transform_token(self, token: Token) -> Any:
         raise NotImplementedError("Black list should be implemented")
 
-    async def is_blacklisted(self, token: Token):
-        raise NotImplementedError("Black list should be implemented")
-
     async def set_token_data(self, data: Any, token: RefreshToken) -> RefreshToken:
         raise NotImplementedError("Set token data should be implemented")
-
-    async def token_to_blacklist(self, token: RefreshToken):
-        raise NotImplementedError("blacklist data should be implemented")
 
 
 class RefreshTokenManager(BaseTokenManager):
     refresh_token_class = RefreshToken
     access_token_class = AccessToken
+    untyped_token_class = UntypedToken
+
+    def get_refresh_token_from_str(self, refresh_token: str) -> RefreshToken:
+        return self.refresh_token_class(refresh_token)
 
     async def create_token_pair(self, data: Any) -> dict[str, str]:
         """
@@ -39,17 +37,17 @@ class RefreshTokenManager(BaseTokenManager):
             "expires_in": access_token["exp"],
         }
 
-    async def refresh_token(self, token: str) -> dict[str, str]:
+    @staticmethod
+    async def refresh_token(refresh_token: RefreshToken) -> dict[str, str]:
         """
 
         Args:
-            token:
+            refresh_token:
 
         Returns:
 
         """
 
-        refresh_token = self.refresh_token_class(token)
         access_token = refresh_token.access_token
         return {"access_token": str(access_token), "expires_in": access_token["exp"]}
 
@@ -65,7 +63,7 @@ class RefreshTokenManager(BaseTokenManager):
         token = self.access_token_class(token)
         return await self.transform_token(token)
 
-    async def verify_token(self, token: str) -> dict:
+    async def verify_token(self, token: str) -> UntypedToken:
         """
 
         Args:
@@ -74,11 +72,4 @@ class RefreshTokenManager(BaseTokenManager):
         Returns:
 
         """
-        token = UntypedToken(token)
-        await self.is_blacklisted(token)
-        return {}
-
-    async def blacklist(self, token: str) -> Token:
-        refresh_token = self.refresh_token_class(token)
-        await self.token_to_blacklist(refresh_token)
-        return refresh_token
+        return self.untyped_token_class(token)

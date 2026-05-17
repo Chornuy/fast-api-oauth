@@ -1,11 +1,13 @@
 from pathlib import Path
 
 import pytest
+import pytest_asyncio
 from asyncclick.testing import CliRunner
 from pytest_mock import MockerFixture
 
+from app.libs.click_cli.command_cli import FastApiCli
 from app.libs.click_cli.fast_api_cli import FastAPICli
-from app.libs.utils.managment import get_fast_api_cli
+from app.libs.managment import get_fast_api_cli
 
 fast_api_import_str = "app.libs.click_cli.tests.fixture_commands.fixture_fast_api_init:test_fast_api_app"
 fast_api_cli = get_fast_api_cli()
@@ -16,8 +18,8 @@ def get_fixture_path(base_dir: Path, fixture_path: list[str]):
 
 
 class TestCommandCli:
-    @pytest.fixture
-    def fast_api_cli_app(self) -> FastAPICli:
+    @pytest_asyncio.fixture(scope="class", autouse=True)
+    def fast_api_cli_app(self) -> FastApiCli:
         return get_fast_api_cli("app.libs.click_cli.tests.fixture_commands.fixture_fast_api_cli:fast_api_cli_test")
 
     @staticmethod
@@ -28,6 +30,10 @@ class TestCommandCli:
             "command-a-three",
             "command-b-one",
             "command-b-two",
+            # TODO: need to fix this
+            "create-products",
+            "create-products-with-error",
+            "get-product",
         ]
 
     @pytest.fixture

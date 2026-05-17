@@ -7,7 +7,7 @@ from pydantic import EmailStr, Field
 
 from app.apps.user.repository import UserRepository
 from app.core.auth.password_generator import make_password, verify_password
-from app.libs.odm_repository.metadata import DocumentRepository
+from app.libs.beanie_odm_ext.document_repository import DocumentRepository
 
 
 class UserRoles(str, Enum):
@@ -28,13 +28,13 @@ class User(DocumentRepository):
 
     @staticmethod
     def make_password(password: str) -> str:
-        """
+        """Make password
 
         Args:
-            password:
+            password (str): password
 
         Returns:
-
+            str: password
         """
         return make_password(password)
 

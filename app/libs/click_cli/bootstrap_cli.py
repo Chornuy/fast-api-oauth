@@ -7,7 +7,7 @@ from fastapi import FastAPI
 
 from app.libs.app_loader.bootstrap import ApplicationBootStrap
 from app.libs.click_cli.base import MultiCommandBase
-from app.libs.utils.managment import get_fast_api_app
+from app.libs.managment import get_fast_api_app
 
 pass_fast_api = click.make_pass_decorator(FastAPI)
 

@@ -1,7 +1,4 @@
-from typing import Any, Dict
-
 from pydantic import SecretStr
-from pydantic._internal._utils import update_not_none
 
 
 class PasswordSecret(SecretStr):
@@ -33,18 +30,6 @@ class PasswordSecret(SecretStr):
     includes_numbers = False
     includes_lowercase = False
     includes_uppercase = False
-
-    @classmethod
-    def __get_pydantic_json_schema__(cls, field_schema: Dict[str, Any]) -> None:
-        update_not_none(
-            field_schema,
-            minLength=cls.min_length,
-            includesNumbers=cls.includes_numbers,
-            includesLowercase=cls.includes_lowercase,
-            includesUppercase=cls.includes_uppercase,
-            includesSpecialChars=cls.includes_special_chars,
-            specialChars=cls.special_chars,
-        )
 
     @classmethod
     def __get_validators__(cls):

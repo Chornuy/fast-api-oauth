@@ -20,7 +20,12 @@ async def register_user(user_register_scheme: UserRegistrationScheme, request: R
     if user:
         raise CustomValidationException(loc=("email",), msg="email already registered")
 
-    user = await User.repository.create_user(**user_register_scheme.model_dump())
+    user = await User.repository.create_user(
+        **{
+            **user_register_scheme.model_dump(),
+            "password": user_register_scheme.password.get_secret_value()
+        }
+    )
 
     verification_url = str(request.url_for("verify", verification_token=create_token(user.email)))
 

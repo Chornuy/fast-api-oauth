@@ -1,5 +1,13 @@
 # ==== pytest ====
+
+[tool.pytest_env]
+FAST_API_SETTINGS_DEFAULT_PATH = "app.settings.settings_test:TestSettings"
+TESTING = "True"
+MONGO_DB_NAME = "test_db"
+
 [tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
 minversion = "6.0"
 python_files = [
     "tests.py",

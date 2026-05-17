@@ -4,7 +4,7 @@ from beanie import Document
 from pydantic._internal._generics import PydanticGenericMetadata
 from pydantic._internal._model_construction import ModelMetaclass
 
-from app.libs.odm_repository.repository import BaseRepository
+from app.libs.beanie_odm_ext.repository import BaseRepository
 
 
 class DocumentRepositoryMeta(ModelMetaclass):
@@ -53,4 +53,4 @@ class DocumentRepositoryMeta(ModelMetaclass):
 
 
 class DocumentRepository(Document, metaclass=DocumentRepositoryMeta):
-    repository: ClassVar = BaseRepository()
+    repository: ClassVar[BaseRepository] = BaseRepository()

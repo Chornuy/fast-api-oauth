@@ -5,19 +5,24 @@ from logging.config import dictConfig
 from fastapi import FastAPI
 
 from app.app_bootstrap import bootstrap
-from app.core.dependency.beanie_odm import init_beanie_db
 from app.core.exception_handler.root import root_exception_handlers
 from app.core.middlewares.cors import setup_cors
-from app.settings import settings
+from app.libs.beanie_odm_ext.mongo_db import MongoDB
+from app.libs.managment.conf import settings
 from app.settings.logging import logger_settings
 from app.settings.routes import root_router
+from app.utils.mongo_conf import transform_settings_to_mongo
 
 dictConfig(logger_settings.model_dump())
 
 
 @asynccontextmanager
 async def lifespan(fast_app: FastAPI):
-    await init_beanie_db(model_settings=settings, models_list=bootstrap.context["beanie_models"])
+    await MongoDB.init_beanie_db(
+        db_name=settings.MONGO_DB_NAME,
+        mongo_connection_params=transform_settings_to_mongo(settings),
+        models_list=bootstrap.context["beanie_models"],
+    )
     yield
 
 

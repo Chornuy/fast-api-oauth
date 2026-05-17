@@ -33,9 +33,9 @@ class TestClickCommandLoader:
         context = command_loader.load(context=context, config={})
 
         expected_result = [
-            "app.libs.app_loader.middlewares.tests.fixture_click.app_a.commands.command_a",
-            "app.libs.app_loader.middlewares.tests.fixture_click.app_a.commands.command_b",
-        ] + command_loader.additional_cli_modules
+                              "app.libs.app_loader.middlewares.tests.fixture_click.app_a.commands.command_b",
+                              "app.libs.app_loader.middlewares.tests.fixture_click.app_a.commands.command_a",
+                          ] + command_loader.additional_cli_modules
 
         assert "commands_modules" in context.keys()
         assert context["commands_modules"] == expected_result

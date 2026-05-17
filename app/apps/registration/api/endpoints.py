@@ -7,11 +7,15 @@ from app.apps.registration.api.schemas import UserEmailScheme, UserRegistrationS
 from app.apps.registration.services.registration import register_user, verify_user
 from app.apps.registration.services.reset_password import generate_reset_password_token, user_reset_password
 from app.core.schemas.actions import SuccessAction
+from app.libs.beanie_odm_ext import transaction
+from app.libs.beanie_odm_ext.session import auto_session
 
 router = APIRouter()
 
 
 @router.post("/register", response_model=SuccessAction)
+@auto_session
+@transaction.atomic
 async def register(user_register_scheme: UserRegistrationScheme, request: Request) -> dict:
     """
 
@@ -27,6 +31,7 @@ async def register(user_register_scheme: UserRegistrationScheme, request: Reques
 
 
 @router.get("/verify/{verification_token}", response_model=SuccessAction)
+@auto_session
 async def verify(
     verification_token: Annotated[str, Path(title="Verification token for user ", min_length=1, max_length=200)],
 ) -> dict:
@@ -45,6 +50,8 @@ async def verify(
 
 
 @router.post("/reset-password", response_model=SuccessAction)
+@auto_session
+@transaction.atomic
 async def reset_password_verify(user_email_scheme: UserEmailScheme, request: Request) -> dict:
     """
 
@@ -60,6 +67,8 @@ async def reset_password_verify(user_email_scheme: UserEmailScheme, request: Req
 
 
 @router.post("/reset-password/{reset_password_token}", response_model=SuccessAction)
+@auto_session
+@transaction.atomic
 async def reset_password(
     reset_password_token: Annotated[str, Path(title="Reset token for user", min_length=1, max_length=200)],
     user_reset_password_scheme: UserResetPasswordScheme,

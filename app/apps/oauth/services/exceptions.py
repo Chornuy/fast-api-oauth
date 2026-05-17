@@ -8,3 +8,12 @@ class AuthCodeNotFound(OAuthFlowError):
 
 class WrongAuthCode(OAuthFlowError):
     pass
+
+class UnknownToken(OAuthFlowError):
+    pass
+
+class WrongTokenType(OAuthFlowError):
+    pass
+
+class UnsupportedTokenType(OAuthFlowError):
+    pass

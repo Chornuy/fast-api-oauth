@@ -1,6 +1,6 @@
 from fastapi_mail import ConnectionConfig
 
-from app.settings.settings import settings
+from app.libs.managment.conf import settings
 
 
 def get_email_conf(template_path: str) -> ConnectionConfig:
