@@ -1,6 +1,6 @@
 from starlette.middleware.cors import CORSMiddleware
 
-from app.settings.settings import settings
+from app.libs.managment.conf import settings
 
 
 def setup_cors() -> dict:

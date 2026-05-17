@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Union
 
-from fastapi import APIRouter, Depends, Form, Query
+from fastapi import APIRouter, Depends, Query
 from fastapi.responses import HTMLResponse
 from pydantic import HttpUrl
 from starlette.requests import Request
@@ -45,8 +45,3 @@ class LoginFlowQuery:
 @router.get("/login", response_class=HTMLResponse)
 async def login(request: Request, login_flow_query: Annotated[LoginFlowQuery, Depends()]):
     return templates.TemplateResponse("login.html", context={"request": request, "login_flow_query": login_flow_query})
-
-
-class LoginFormRequest:
-    def __init__(self, login: Annotated[str, Form()]):
-        pass

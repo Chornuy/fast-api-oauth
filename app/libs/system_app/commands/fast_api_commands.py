@@ -5,7 +5,7 @@ import uvicorn
 from fastapi import APIRouter, FastAPI
 
 from app.libs.click_cli.bootstrap_cli import pass_fast_api
-from app.libs.utils.managment import FAST_API_APP_ENV_NAME, get_fast_api_cli
+from app.libs.managment import FAST_API_APP_ENV_NAME, get_fast_api_cli
 
 fast_api_cli = get_fast_api_cli()
 

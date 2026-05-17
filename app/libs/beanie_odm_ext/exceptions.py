@@ -1,3 +1,7 @@
+class MongoDbException(Exception):
+    pass
+
+
 class RepositoryException(Exception):
     pass
 

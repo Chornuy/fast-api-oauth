@@ -1,35 +1,45 @@
-version: "3.9"
-
 volumes:
-  mongo_data: {}
+  mongo_data: { }
 
 networks:
-  fast-api-websocket:
+  fast-api-oauth:
     driver: bridge
 
 services:
 
   mongo:
-    image: mongo:6.0
+    image: mongo:7.0
     environment:
       MONGO_INITDB_ROOT_USERNAME: "root"
       MONGO_INITDB_ROOT_PASSWORD: "example"
       MONGO_INITDB_USER: "mongodb"
       MONGO_INITDB_PWD: "mongodb"
+      KEYFILE_PATH: "/keyfile/keyfile"
+      REPLICA_SET_HOST: "fast-api-oauth-mongo-1"
+      REPLICA_SET_PORT: "27017"
+    command: [ "--replSet", "rs0", "--keyFile", "/keyfile/keyfile", "--bind_ip", "localhost,fast-api-oauth-mongo-1" ]
+    healthcheck:
+      test: echo "try { rs.status() } catch (err) { rs.initiate({_id:'rs0',members:[{_id:0,host:'fast-api-oauth-mongo-1:27017'}]}) }" | mongosh -u $$MONGO_INITDB_ROOT_USERNAME -p $$MONGO_INITDB_ROOT_PASSWORD --port 27017 --quiet
+      interval: 5s
+      timeout: 30s
+      start_period: 0s
+      start_interval: 1s
+      retries: 30
     volumes:
       - mongo_data:/data/db
-      - .provisions/mongo-init-js/:/docker-entrypoint-initdb.d/:ro
+      - .provisions/docker/mongo/keyfile/:/keyfile/:wro
+      - .provisions/docker/mongo/mongo-init-js/:/docker-entrypoint-initdb.d/:ro
     ports:
       - "27017:27017"
     networks:
-      - fast-api-websocket
+      - fast-api-oauth
 
   mailhog:
     image: mailhog/mailhog:v1.0.0
     ports:
       - "8025:8025"
     networks:
-      - fast-api-websocket
+      - fast-api-oauth
 
   fast-api: &fast-api
     build:
@@ -45,4 +55,4 @@ services:
     ports:
       - "8080:8080"
     networks:
-      - fast-api-websocket
+      - fast-api-oauth

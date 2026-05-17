@@ -7,7 +7,7 @@ from asyncclick.core import Context
 from fastapi import FastAPI
 
 from app.libs.app_loader.bootstrap import ApplicationBootStrap
-from app.libs.utils.managment import get_fast_api_app
+from app.libs.managment import get_fast_api_app
 from app.utils.module_loading import cached_import_module
 
 pass_fast_api = click.make_pass_decorator(FastAPI)

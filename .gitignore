@@ -295,3 +295,4 @@ MailHog
 
 .pytest_cache/
 .coverage
+.provisions/docker/mongo/keyfile/keyfile

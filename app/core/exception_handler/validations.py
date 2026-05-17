@@ -11,8 +11,7 @@ def transform_errors(errors: Sequence[Any]) -> list:
     errors_response = []
 
     for error in errors:
-        print(error)
-        error_dict = {"field_name": ".".join(error["loc"]), "message": error["msg"]}
+        error_dict = {"field_name": ".".join(str(v) for v in error["loc"]), "message": error["msg"]}
         errors_response.append(error_dict)
 
     return errors_response
@@ -21,11 +20,11 @@ def transform_errors(errors: Sequence[Any]) -> list:
 VALIDATION_STATUS_MESSAGE = "Request contain errors in data"
 
 
-async def request_validation_exception_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
+async def request_validation_exception_handler(_: Request, exc: RequestValidationError) -> JSONResponse:
     """Override default validation exception
 
     Args:
-        request (Request):
+        _ (Request): request object
         exc (RequestValidationError):
 
     Returns:

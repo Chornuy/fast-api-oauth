@@ -8,22 +8,23 @@ fastapi = "*"
 pydentic = "*"
 pydantic-settings = "*"
 asyncclick = "*"
-uvicorn = {extras = ["standard"], version = "*"}
-beanie = "*"
+uvicorn = { extras = ["standard"], version = "*" }
 httpx = "*"
 asgi-lifespan = "*"
 pytest-mock = "*"
-install = "*"
 pytest-asyncio = "*"
 email-validator = "*"
 fastapi-mail = "*"
 itsdangerous = "*"
 bcrypt = "4.0.1"
-passlib = {extras = ["bcrypt"], version = "*"}
-python-jose = {extras = ["cryptography"], version = "*"}
+passlib = { extras = ["bcrypt"], version = "*" }
+python-jose = { extras = ["cryptography"], version = "*" }
 python-multipart = "*"
 pyotp = "*"
 polyfactory = "*"
+beanie = "*"
+typing-extensions = "*"
+pytest-env = "*"
 
 [dev-packages]
 coverage = "*"

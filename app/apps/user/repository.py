@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
-from app.libs.odm_repository.exceptions import ObjectNotFound
-from app.libs.odm_repository.repository import BaseRepository
+from app.libs.beanie_odm_ext.exceptions import ObjectNotFound
+from app.libs.beanie_odm_ext.repository import BaseRepository
 
 if TYPE_CHECKING:
     from app.apps.user.models import User

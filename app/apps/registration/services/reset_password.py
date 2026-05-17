@@ -5,7 +5,7 @@ from app.apps.registration.services.email import send_reset_password_email
 from app.apps.user.models import User
 from app.core.auth.verification_token import create_token, verify_token
 from app.core.exceptions.validation import CustomValidationException
-from app.libs.odm_repository.exceptions import ObjectNotFound
+from app.libs.beanie_odm_ext.exceptions import ObjectNotFound
 
 
 async def generate_reset_password_token(user_email_scheme: UserEmailScheme, request: Request) -> User:

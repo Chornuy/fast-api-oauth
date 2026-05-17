@@ -1,7 +1,7 @@
 from itsdangerous import BadTimeSignature, SignatureExpired, URLSafeTimedSerializer
 from pydantic import EmailStr
 
-from app.settings.settings import settings
+from app.libs.managment.conf import settings
 
 token_algo = URLSafeTimedSerializer(settings.SECRET_KEY, salt="Email_Verification_&_Forgot_password")
 

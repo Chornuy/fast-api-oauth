@@ -1,0 +1,8 @@
+#!/bin/bash
+
+PATH_TO_SECRET=$KEYFILE_PATH
+
+openssl rand -base64 756 > $PATH_TO_SECRET
+chmod 600 $PATH_TO_SECRET
+chown 999 $PATH_TO_SECRET
+chgrp 999 $PATH_TO_SECRET

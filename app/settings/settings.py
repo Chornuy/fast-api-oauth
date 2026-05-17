@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     PROJECT_DIR: pathlib.Path = BASE_DIR.joinpath(pathlib.Path(PROJECT_FOLDER_NAME))
     APPS_DIR: pathlib.Path = PROJECT_DIR.joinpath(APPS_FOLDER_NAME)
 
-    PROJECT_NAME: str = "fast-api-websockets"
+    PROJECT_NAME: str = "fast-api-oauth2"
 
     API_V1_STR: str = "/v1"
 
@@ -35,14 +35,28 @@ class Settings(BaseSettings):
     MONGO_DB_HOST: str = "localhost"
     MONGO_DB_PORT: int | None = 0
     MONGO_DB_NAME: str = ""
-
+    MONGO_DB_REPLICA_SET: str | None = None
+    MONGO_DB_TLS: bool | None | str = None
+    MONGO_DB_AUTH_MECHANISM: str | None = None
+    MONGO_DB_TLS_CA_FILE: str | None = None
     MONGO_DB_AUTH_SOURCE: str = "admin"
 
     ALLOWED_ORIGINS: list = [""]
 
     @model_validator(mode="after")
     def assemble_db_connection(self):
-        query_params = {"authSource": self.MONGO_DB_AUTH_SOURCE}
+
+        query_params = {"authSource": self.MONGO_DB_AUTH_SOURCE, "replicaSet": self.MONGO_DB_REPLICA_SET}
+
+        if self.MONGO_DB_AUTH_MECHANISM:
+            query_params["authMechanism"] = self.MONGO_DB_AUTH_MECHANISM
+
+        if self.MONGO_DB_TLS_CA_FILE:
+            query_params["tlsCAFile"] = self.MONGO_DB_TLS_CA_FILE
+            query_params["tls"] = True
+
+        if self.MONGO_DB_TLS and isinstance(self.MONGO_DB_TLS, bool):
+            query_params["tls"] = self.MONGO_DB_TLS
 
         mongo_str = MongoDsn.build(
             scheme=self.MONGO_DB_SCHEME,
@@ -98,11 +112,9 @@ class Settings(BaseSettings):
 
     # JWT token auth
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    REFRESH_TOKEN_EXPIRE_MINUTES: int = 20160
 
     class Config:
         case_sensitive = True
         env_file = ".env"
         extra = Extra.ignore
-
-
-settings = Settings()

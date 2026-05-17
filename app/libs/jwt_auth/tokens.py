@@ -4,8 +4,9 @@ from uuid import uuid4
 from jose import JOSEError, jwt
 
 from app.core.security.jwt import ALGORITHM
+from app.libs.jwt_auth.exceptions import InvalidJwtTokenException
+from app.libs.managment.conf import settings
 from app.libs.utils.datetime import datetime_from_epoch, datetime_to_epoch
-from app.settings.settings import settings
 
 
 class Token:
@@ -25,7 +26,7 @@ class Token:
             try:
                 self.payload = self.decode(token)
             except JOSEError:
-                raise Exception("Token is invalid or expired")
+                raise InvalidJwtTokenException("Token is invalid or expired")
 
         else:
             # New token.  Skip all the verification steps.
@@ -125,12 +126,12 @@ class Token:
 
 class AccessToken(Token):
     token_type = "access"
-    lifetime = timedelta(minutes=30)
+    lifetime = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
 
 
 class RefreshToken(Token):
     token_type = "refresh"
-    lifetime = timedelta(days=30)
+    lifetime = timedelta(days=settings.REFRESH_TOKEN_EXPIRE_MINUTES)
     access_token_class = AccessToken
 
     no_copy_claims = (

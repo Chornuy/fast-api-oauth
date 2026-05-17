@@ -6,7 +6,7 @@ db.createUser(
     roles: [
       {
         role: "readWrite",
-        db: "fast-api-websocket"
+        db: "fast-api-oauth"
       }
     ]
   }
