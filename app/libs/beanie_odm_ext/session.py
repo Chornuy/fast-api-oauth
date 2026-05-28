@@ -1,5 +1,6 @@
+from collections.abc import Awaitable, Callable
 from contextlib import AsyncContextDecorator
-from typing import Callable, TypeVar, Awaitable, Any, ParamSpec, overload, Optional
+from typing import Any, ParamSpec, TypeVar, overload
 
 from app.libs.beanie_odm_ext.mongo_db import MongoDB
 
@@ -32,10 +33,10 @@ def auto_session(func: Callable[P, Awaitable[R]], **kwargs: Any) -> Callable[P, 
 
 
 @overload
-def auto_session(func: Optional[Callable[P, Awaitable[R]]] = None, **kwargs: Any) -> WireSession: ...
+def auto_session(func: Callable[P, Awaitable[R]] | None = None, **kwargs: Any) -> WireSession: ...
 
 
-def auto_session(func: Optional[Callable[P, Awaitable[R]]] = None, **kwargs) -> AF | WireSession:
+def auto_session(func: Callable[P, Awaitable[R]] | None = None, **kwargs) -> AF | WireSession:
     if callable(func):
         return WireSession(**kwargs)(func)
     return WireSession(**kwargs)

@@ -4,8 +4,10 @@ import pytest
 from pytest_mock import MockerFixture
 
 from app.libs.app_loader.middlewares.app_loaders import AutoImportAppLoader
-from app.libs.app_loader.middlewares.exceptions import AppNameAlreadyRegistered
-from app.libs.app_loader.middlewares.tests.fixture import get_base_bootstrap_config_fixture
+from app.libs.app_loader.middlewares.exceptions import AppNameAlreadyRegisteredError
+from app.libs.app_loader.middlewares.tests.fixture import (
+    get_base_bootstrap_config_fixture,
+)
 
 
 def get_fixture_path(base_dir: Path, fixture_path: str):
@@ -50,7 +52,10 @@ class TestAppLoader:
         )
         mock_get_app_folder_list.return_value = get_mocked_success_flow(base_dir)
 
-        context = app_loader.load(context=get_base_bootstrap_config_fixture(base_dir, "fixture_app_loader"), config={})
+        context = app_loader.load(
+            context=get_base_bootstrap_config_fixture(base_dir, "fixture_app_loader"),
+            config={},
+        )
         assert "apps" in context.keys()
 
         expected_result = get_expected_result_on_success_flow(base_dir)
@@ -61,5 +66,8 @@ class TestAppLoader:
             "app.libs.app_loader.middlewares.app_loaders.AutoImportAppLoader.get_app_folder_list"
         )
         mock_get_app_folder_list.return_value = get_mocked_already_registered_flow(base_dir)
-        with pytest.raises(AppNameAlreadyRegistered):
-            app_loader.load(context=get_base_bootstrap_config_fixture(base_dir, "fixture_app_loader"), config={})
+        with pytest.raises(AppNameAlreadyRegisteredError):
+            app_loader.load(
+                context=get_base_bootstrap_config_fixture(base_dir, "fixture_app_loader"),
+                config={},
+            )

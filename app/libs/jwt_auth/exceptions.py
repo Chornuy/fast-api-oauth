@@ -1,5 +1,6 @@
-class TokenException(Exception):
+class TokenError(Exception):
     pass
 
-class InvalidJwtTokenException(TokenException):
+
+class InvalidJwtTokenError(TokenError):
     pass

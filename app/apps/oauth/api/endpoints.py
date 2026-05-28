@@ -6,8 +6,8 @@ from app.apps.login.api.endpoints import oauth_manager
 from app.apps.oauth.api.shemes import (
     OauthScheme,
     TokenPair,
-    UserResponseScheme,
     TokenRevokeScheme,
+    UserResponseScheme,
 )
 from app.apps.user.models import User
 from app.core.dependency.security import get_current_user

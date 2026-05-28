@@ -28,9 +28,9 @@ class FastApiCliBootStrap(MultiCommandBase):
 
     async def make_context(
         self,
-        info_name: t.Optional[str],
-        args: t.List[str],
-        parent: t.Optional[Context] = None,
+        info_name: str | None,
+        args: list[str],
+        parent: Context | None = None,
         **extra: t.Any,
     ) -> Context:
         context = await super().make_context(info_name, args, parent, **extra)

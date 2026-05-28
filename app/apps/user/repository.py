@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from app.libs.beanie_odm_ext.exceptions import ObjectNotFound
+from app.libs.beanie_odm_ext.exceptions import ObjectNotFoundError
 from app.libs.beanie_odm_ext.repository import BaseRepository
 
 if TYPE_CHECKING:
@@ -47,7 +47,7 @@ class UserRepository(BaseRepository):
         """
         user = await self.ger_user_by_email(email)
         if not user:
-            raise ObjectNotFound()
+            raise ObjectNotFoundError()
 
         user.password = self.get_document().make_password(password)
         await user.save()

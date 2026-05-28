@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from app.libs.app_loader.middlewares.base import BaseLoaderMiddleware
-from app.libs.app_loader.middlewares.exceptions import RuntimeMiddlewareException
+from app.libs.app_loader.middlewares.exceptions import RuntimeMiddlewareError
 
 
 class ClickCommandLoader(BaseLoaderMiddleware):
@@ -70,10 +70,10 @@ class ClickCommandLoader(BaseLoaderMiddleware):
         try:
             app_list = context["apps"]
         except KeyError:
-            raise RuntimeMiddlewareException(
+            raise RuntimeMiddlewareError(
                 "app key missing in result dict, ClickCommandLoader middleware depends"
                 " on AutoImportAppLoader middleware, and should run after it"
-            )
+            ) from None
 
         commands_file_paths = []
 

@@ -1,5 +1,5 @@
 from importlib import import_module
-from typing import List, Tuple, Type, TypeVar
+from typing import TypeVar
 
 from beanie import Document, UnionDoc, View
 
@@ -30,7 +30,7 @@ class BeanieModelLoader(BaseLoaderMiddleware):
         app_config_module = cached_import_module(module_path)
         return module_has_submodule(app_config_module, self.models_module_name)
 
-    def import_module_models(self, module_path: str) -> List[Tuple[str, Type]]:
+    def import_module_models(self, module_path: str) -> list[tuple[str, type]]:
         """Build from pythonic path like "app.apps.user" to "app.apps.user.modules", and get all
         subclasses of Models ODM that was registered inside
 

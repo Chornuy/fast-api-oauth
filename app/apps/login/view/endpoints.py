@@ -1,14 +1,14 @@
 from enum import Enum
-from typing import Union
+from typing import Annotated  # type: ignore [attr-defined]
 from urllib.parse import urlencode
 
-from fastapi import APIRouter, Depends, Query, Form
+from fastapi import APIRouter, Depends, Form, Query
 from fastapi.responses import HTMLResponse
 from pydantic import HttpUrl
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
 from starlette.templating import Jinja2Templates
-from typing_extensions import Annotated, Doc  # type: ignore [attr-defined]
+from typing_extensions import Doc
 
 from app.apps.login.services.authentication import authenticate_user
 from app.apps.login.view.schemes import LoginRequestForm
@@ -42,7 +42,7 @@ class LoginFlowQuery:
             ),
         ],
         state: Annotated[str, Query()] = None,
-        response_type: Annotated[Union[str, None], Query(enum=["code"])] = "code",
+        response_type: Annotated[str | None, Query(enum=["code"])] = "code",
     ):
         self.response_type = response_type
         self.redirect_uri = redirect_uri
@@ -51,13 +51,17 @@ class LoginFlowQuery:
 
 @router.get("", response_class=HTMLResponse)
 async def login(request: Request, login_flow_query: Annotated[LoginFlowQuery, Depends()]):
-    return templates.TemplateResponse("login.html", context={"request": request, "login_flow_query": login_flow_query})
+    return templates.TemplateResponse(
+        request,
+        "login.html",
+        context={"request": request, "login_flow_query": login_flow_query},
+    )
 
 
 @auto_session
 @transaction.atomic
 @router.post("", response_class=RedirectResponse, status_code=302)
-async def login(login_form: Annotated[LoginRequestForm, Form()]):
+async def login_post(login_form: Annotated[LoginRequestForm, Form()]):
     user = await authenticate_user(
         username=str(login_form.email),
         password=str(login_form.password.get_secret_value()),

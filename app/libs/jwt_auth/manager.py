@@ -5,10 +5,10 @@ from app.libs.jwt_auth.tokens import AccessToken, RefreshToken, Token, UntypedTo
 
 class BaseTokenManager:
     async def transform_token(self, token: Token) -> Any:
-        raise NotImplementedError("Black list should be implemented")
+        raise NotImplementedError("Black list should be implemented") from None
 
     async def set_token_data(self, data: Any, token: RefreshToken) -> RefreshToken:
-        raise NotImplementedError("Set token data should be implemented")
+        raise NotImplementedError("Set token data should be implemented") from None
 
 
 class RefreshTokenManager(BaseTokenManager):

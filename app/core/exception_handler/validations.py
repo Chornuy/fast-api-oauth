@@ -1,4 +1,5 @@
-from typing import Any, Sequence
+from collections.abc import Sequence
+from typing import Any
 
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError

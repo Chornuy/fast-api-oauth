@@ -1,5 +1,81 @@
-# ==== pytest ====
+[project]
+name = "fast-api-oauth"
+version = "0.0.1"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi",
+    "pydantic", # Fixed typo: changed from pydentic
+    "pydantic-settings",
+    "asyncclick",
+    "uvicorn[standard]",
+    "httpx",
+    "asgi-lifespan",
+    "pytest-mock",
+    "pytest-asyncio",
+    "email-validator",
+    "fastapi-mail",
+    "itsdangerous",
+    "bcrypt==4.0.1",
+    "passlib[bcrypt]",
+    "python-jose[cryptography]",
+    "python-multipart",
+    "pyotp",
+    "polyfactory",
+    "beanie",
+    "typing-extensions",
+    "pytest-env",
+]
 
+# ==== Dependency Groups ====
+[dependency-groups]
+dev = [
+    "coverage",
+    "pytest",
+    "pytest-sugar",
+    "mypy",
+    "pre-commit",
+    "watchfiles",
+    "polyfactory",
+    "pytest-asyncio",
+    "ruff", # Added Ruff to handle linting, formatting, and import sorting
+]
+
+# ==== UV Configuration ====
+[tool.uv]
+package = false
+
+[[tool.uv.index]]
+name = "pypi"
+url = "https://pypi.org/simple"
+
+# ==== Ruff (Replaces Black, Flake8, and iSort) ====
+[tool.ruff]
+target-version = "py312"
+line-length = 119        # Kept your preference from your old black/pylint config
+src = ["app"]
+
+[tool.ruff.lint]
+# E/W = Flake8 Errors/Warnings, F = Pyflakes, I = isort, B = Bugbear, UP = Pyupgrade, N = PEP8 Naming
+select = ["E", "W", "F", "I", "B", "UP", "N"]
+ignore = []
+
+exclude = [
+    ".git",
+    ".venv",
+    "__pycache__",
+    "build",
+    "dist",
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
+combine-as-imports = true
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+# ==== Pytest & Environment ====
 [tool.pytest_env]
 FAST_API_SETTINGS_DEFAULT_PATH = "app.settings.settings_test:TestSettings"
 TESTING = "True"
@@ -14,34 +90,19 @@ python_files = [
     "test_*.py",
 ]
 
-# ==== Coverage ====
-[tool.coverage.run]
-include = ["settings/**"]
-omit = ["*/tests/*"]
-
-
-# ==== black ====
-[tool.black]
-line-length = 119
-target-version = ['py311']
-
-
-# ==== isort ====
-[tool.isort]
-profile = "black"
-line_length = 119
-skip = ["venv/"]
-
-
-# ==== mypy ====
+# ==== Mypy Type Checking ====
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.13"
 check_untyped_defs = true
 ignore_missing_imports = true
 warn_unused_ignores = true
 warn_redundant_casts = true
 warn_unused_configs = true
 
+# ==== Coverage ====
+[tool.coverage.run]
+include = ["settings/**"]
+omit = ["*/tests/*"]
 
 # ==== PyLint ====
 [tool.pylint.MASTER]

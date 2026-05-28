@@ -1,10 +1,10 @@
-class NotSupportedGrantTypeFlow(Exception):
+class NotSupportedGrantTypeFlowError(Exception):
     pass
 
 
-class GrantTypeKeyNotFound(Exception):
+class GrantTypeKeyNotFoundError(Exception):
     pass
 
 
-class NoMethodForGrantTypeFound(Exception):
+class NoMethodForGrantTypeFoundError(Exception):
     pass

@@ -2,15 +2,15 @@ import typing as t
 
 import asyncclick as click
 from asyncclick import Command
-from asyncclick.core import Context, _check_multicommand
+from asyncclick.core import Context, _check_nested_chain
 
 from app.utils.module_loading import cached_import_module
 
 
-class MultiCommandBase(click.MultiCommand):
+class MultiCommandBase(click.Group):
     commands = {}
 
-    command_class: t.Optional[t.Type[Command]] = None
+    command_class: type[Command] | None = None
 
     @staticmethod
     def load_commands(command_modules: list[str]) -> None:
@@ -25,14 +25,14 @@ class MultiCommandBase(click.MultiCommand):
         for command_module in command_modules:
             cached_import_module(command_module)
 
-    def add_command(self, cmd: Command, name: t.Optional[str] = None) -> None:
+    def add_command(self, cmd: Command, name: str | None = None) -> None:
         """Registers another :class:`Command` with this group.  If the name
         is not provided, the name of the command is used.
         """
         name = name or cmd.name
         if name is None:
             raise TypeError("Command has no name.")
-        _check_multicommand(self, name, cmd, register=True)
+        _check_nested_chain(self, name, cmd, register=True)
         self.commands[name] = cmd
 
     def command(self, *args, **kwargs) -> t.Callable:
@@ -50,7 +50,7 @@ class MultiCommandBase(click.MultiCommand):
         if self.command_class and kwargs.get("cls") is None:
             kwargs["cls"] = self.command_class
 
-        func: t.Optional[t.Callable] = None
+        func: t.Callable | None = None
 
         if args and callable(args[0]):
             assert len(args) == 1 and not kwargs, "Use 'command(**kwargs)(callable)' to provide arguments."
@@ -82,7 +82,7 @@ class MultiCommandBase(click.MultiCommand):
         except KeyError:
             return None
 
-    def list_commands(self, ctx: Context) -> t.List[str]:
+    def list_commands(self, ctx: Context) -> list[str]:
         """Return a list of commands, after importing all modules that contains commands decorator
 
         Args:

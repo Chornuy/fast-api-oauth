@@ -2,18 +2,21 @@ class OAuthFlowError(Exception):
     pass
 
 
-class AuthCodeNotFound(OAuthFlowError):
+class AuthCodeNotFoundError(OAuthFlowError):
     pass
 
 
-class WrongAuthCode(OAuthFlowError):
+class WrongAuthCodeError(OAuthFlowError):
     pass
 
-class UnknownToken(OAuthFlowError):
+
+class UnknownTokenError(OAuthFlowError):
     pass
 
-class WrongTokenType(OAuthFlowError):
+
+class WrongTokenTypeError(OAuthFlowError):
     pass
 
-class UnsupportedTokenType(OAuthFlowError):
+
+class UnsupportedTokenTypeError(OAuthFlowError):
     pass

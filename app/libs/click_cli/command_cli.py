@@ -16,7 +16,7 @@ pass_fast_api = click.make_pass_decorator(FastAPI)
 class FastApiCli(click.MultiCommand):
     commands = {}
 
-    command_class: t.Optional[t.Type[Command]] = None
+    command_class: type[Command] | None = None
 
     def __init__(self, bootstrap: ApplicationBootStrap, *args, **attrs):
         """Overriding init for injecting helper object of ApplicationBootStrap class.
@@ -33,9 +33,9 @@ class FastApiCli(click.MultiCommand):
 
     async def make_context(
         self,
-        info_name: t.Optional[str],
-        args: t.List[str],
-        parent: t.Optional[Context] = None,
+        info_name: str | None,
+        args: list[str],
+        parent: Context | None = None,
         **extra: t.Any,
     ) -> Context:
         context = await super().make_context(info_name, args, parent, **extra)

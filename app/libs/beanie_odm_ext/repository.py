@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Any, Mapping, Type, Union, Optional
+from collections.abc import Mapping
+from typing import TYPE_CHECKING, Any, Optional
 
 from beanie import Document
 from beanie.exceptions import DocumentNotFound
@@ -8,13 +9,13 @@ if TYPE_CHECKING:
 
 
 class BaseRepository:
-    __model__: Type[Document] = None
+    __model__: type[Document] = None
 
-    def get_document(self) -> Type[Document]:
+    def get_document(self) -> type[Document]:
         return self.__model__
 
     @classmethod
-    def bind_to_cls(cls, document_cls: Type[Document]) -> None:
+    def bind_to_cls(cls, document_cls: type[Document]) -> None:
         cls.__model__ = document_cls
 
     async def create(self, **kwargs) -> Document:
@@ -32,9 +33,7 @@ class BaseRepository:
     async def get(self, *args, **kwargs) -> Optional["DocType"]:
         return await self.get_document().get(*args, **kwargs)
 
-    async def get_or_create(
-        self, *args: Union[Mapping[str, Any], bool], defaults: dict = None, **kwargs: Any
-    ) -> "DocType":
+    async def get_or_create(self, *args: Mapping[str, Any] | bool, defaults: dict = None, **kwargs: Any) -> "DocType":
         defaults = defaults or {}
 
         obj = await self.get_document().find_one(*args, **kwargs).project()

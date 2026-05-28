@@ -2,11 +2,13 @@ import logging
 from pathlib import Path
 
 from app.libs.app_loader.middlewares.base import BaseLoaderMiddleware
-from app.libs.app_loader.middlewares.exceptions import NotInstanceOfBaseMiddleware, SkipMiddlewareException
+from app.libs.app_loader.middlewares.exceptions import (
+    NotInstanceOfBaseMiddlewareError,
+    SkipMiddlewareError,
+)
 from app.utils.module_loading import import_string
 
 logger = logging.getLogger(__name__)
-
 
 DEFAULT_LOADER_PIPELINE = [
     "app.libs.app_loader.middlewares.app_loaders:AutoImportAppLoader",
@@ -58,7 +60,10 @@ class ApplicationBootStrap:
         Returns:
             dict: dict with basic configs
         """
-        context["bootstrap_config"] = {"app_dir": self.app_dir, "base_dir": self.base_dir}
+        context["bootstrap_config"] = {
+            "app_dir": self.app_dir,
+            "base_dir": self.base_dir,
+        }
 
         return context
 
@@ -72,7 +77,7 @@ class ApplicationBootStrap:
             pipeline_cls = import_string(pipeline_import_str, ":")
 
             if not issubclass(pipeline_cls, BaseLoaderMiddleware):
-                raise NotInstanceOfBaseMiddleware(
+                raise NotInstanceOfBaseMiddlewareError(
                     f"Got class {pipeline_cls.__class__} " f"that is not subclass of {BaseLoaderMiddleware.__class__}"
                 )
 
@@ -92,7 +97,7 @@ class ApplicationBootStrap:
             middleware_obj = middleware_cls()
             try:
                 self._context = middleware_obj.load(context=context, config=self.config)
-            except SkipMiddlewareException as e:
+            except SkipMiddlewareError as e:
                 logger.exception(e)
 
     def load(self) -> dict:

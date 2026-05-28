@@ -3,8 +3,9 @@ from typing import TYPE_CHECKING
 from app.libs.managment.env_loader import get_app_by_env_str
 
 if TYPE_CHECKING:
-    from app.libs.click_cli.command_cli import FastApiCli
     from fastapi import FastAPI
+
+    from app.libs.click_cli.command_cli import FastApiCli
 
 FAST_API_CLI_ENV_NAME = "FAST_API_CLI_PATH"
 FAST_API_CLI_DEFAULT_PATH = "app.fast_api_cli:fast_api_cli"

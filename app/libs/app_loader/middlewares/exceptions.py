@@ -1,26 +1,26 @@
-class LoaderException(Exception):
+class LoaderError(Exception):
     """Base Loader exception"""
 
     pass
 
 
-class NotInstanceOfBaseMiddleware(Exception):
+class NotInstanceOfBaseMiddlewareError(Exception):
     """Raised when middleware is not subclass of"""
 
 
-class AppNameAlreadyRegistered(LoaderException):
+class AppNameAlreadyRegisteredError(LoaderError):
     """Raised when multiple app registered with the same name"""
 
     pass
 
 
-class SkipMiddlewareException(LoaderException):
+class SkipMiddlewareError(LoaderError):
     """Called in case need to skip middleware processing"""
 
     pass
 
 
-class RuntimeMiddlewareException(LoaderException):
+class RuntimeMiddlewareError(LoaderError):
     """Raised in case internal error"""
 
     pass

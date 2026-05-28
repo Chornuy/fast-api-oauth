@@ -1,15 +1,15 @@
-from typing import AsyncGenerator
+from collections.abc import AsyncGenerator
 
 import pytest
 import pytest_asyncio
 from asgi_lifespan import LifespanManager
 from fastapi import FastAPI
-from httpx import AsyncClient, ASGITransport
+from httpx import ASGITransport, AsyncClient
 from pymongo.asynchronous.client_session import AsyncClientSession
 from pytest_mock import MockerFixture
 
 from app.libs.beanie_odm_ext.session import WireSession
-from app.libs.beanie_odm_ext.tests.fixtures.models import Product, Category
+from app.libs.beanie_odm_ext.tests.fixtures.models import Category, Product
 from app.libs.beanie_odm_ext.transaction import Atomic
 from app.libs.managment import get_fast_api_app
 

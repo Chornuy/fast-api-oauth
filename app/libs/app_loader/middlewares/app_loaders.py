@@ -3,7 +3,7 @@ import logging
 from pathlib import Path
 
 from app.libs.app_loader.middlewares.base import BaseLoaderMiddleware
-from app.libs.app_loader.middlewares.exceptions import AppNameAlreadyRegistered
+from app.libs.app_loader.middlewares.exceptions import AppNameAlreadyRegisteredError
 from app.utils.module_loading import cached_import_class
 
 logger = logging.getLogger(__name__)
@@ -71,7 +71,7 @@ class AutoImportAppLoader(BaseLoaderMiddleware):
                 continue
 
             if app_config["name"] in apps.keys():
-                raise AppNameAlreadyRegistered()
+                raise AppNameAlreadyRegisteredError()
 
             apps[app_config["name"]] = app_config
 

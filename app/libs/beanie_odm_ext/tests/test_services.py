@@ -1,12 +1,12 @@
 import pytest
 import pytest_asyncio
 from pymongo import AsyncMongoClient
-from pymongo.asynchronous.client_session import AsyncClientSession, _SESSION
+from pymongo.asynchronous.client_session import _SESSION, AsyncClientSession
 from pytest_mock import MockerFixture
 
 from app.libs.beanie_odm_ext.mongo_db import MongoDB
 from app.libs.beanie_odm_ext.tests.fixtures import service
-from app.libs.beanie_odm_ext.tests.fixtures.models import Product, Category
+from app.libs.beanie_odm_ext.tests.fixtures.models import Category, Product
 from app.libs.beanie_odm_ext.transaction import Atomic
 from app.libs.managment.conf import settings
 from app.utils.mongo_conf import transform_settings_to_mongo

@@ -4,7 +4,7 @@ from app.apps.registration.api.schemas import UserRegistrationScheme
 from app.apps.registration.services.email import send_verification_email
 from app.apps.user.models import User
 from app.core.auth.verification_token import create_token, verify_token
-from app.core.exceptions.validation import CustomValidationException
+from app.core.exceptions.validation import CustomValidationError
 
 
 async def register_user(user_register_scheme: UserRegistrationScheme, request: Request) -> User:
@@ -18,12 +18,12 @@ async def register_user(user_register_scheme: UserRegistrationScheme, request: R
     """
     user = await User.repository.ger_user_by_email(user_register_scheme.email)
     if user:
-        raise CustomValidationException(loc=("email",), msg="email already registered")
+        raise CustomValidationError(loc=("email",), msg="email already registered")
 
     user = await User.repository.create_user(
         **{
             **user_register_scheme.model_dump(),
-            "password": user_register_scheme.password.get_secret_value()
+            "password": user_register_scheme.password.get_secret_value(),
         }
     )
 
@@ -44,7 +44,7 @@ async def verify_user(verification_token: str) -> User:
     """
     email = verify_token(verification_token)
     if not email:
-        raise CustomValidationException(loc=("verification_token",), msg="Invalid verification token")
+        raise CustomValidationError(loc=("verification_token",), msg="Invalid verification token")
 
     user = await User.repository.ger_user_by_email(email)
     if user.verified:

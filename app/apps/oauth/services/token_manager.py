@@ -1,15 +1,12 @@
-from typing import Any
-
 from app.apps.oauth.models import JwtToken
 from app.apps.user.models import User
-from app.libs.jwt_auth.exceptions import TokenException
+from app.libs.jwt_auth.exceptions import TokenError
 from app.libs.jwt_auth.manager import RefreshTokenManager
 from app.libs.jwt_auth.tokens import AccessToken, RefreshToken, Token
 from app.libs.utils.datetime import datetime_from_epoch
 
 
 class UserTokenManager(RefreshTokenManager):
-
     @staticmethod
     async def transform_token(token: AccessToken) -> User:
         """
@@ -36,7 +33,7 @@ class UserTokenManager(RefreshTokenManager):
         """
         is_token_blacklisted = await JwtToken.repository.is_blacklisted(token[Token.jti_claim])
         if is_token_blacklisted:
-            raise TokenException("Token is black listed")
+            raise TokenError("Token is black listed")
 
     async def set_token_data(self, user: User, token: RefreshToken) -> RefreshToken:
         """
@@ -54,7 +51,7 @@ class UserTokenManager(RefreshTokenManager):
             token=str(token),
             created_at=token.current_time,
             expire_at=datetime_from_epoch(token["exp"]),
-            user=user
+            user=user,
         )
         return token
 

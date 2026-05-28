@@ -1,10 +1,10 @@
-class MongoDbException(Exception):
+class MongoDbError(Exception):
     pass
 
 
-class RepositoryException(Exception):
+class RepositoryError(Exception):
     pass
 
 
-class ObjectNotFound(Exception):
+class ObjectNotFoundError(Exception):
     pass

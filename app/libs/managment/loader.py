@@ -1,5 +1,3 @@
-from typing import Type
-
 from pydantic import BaseModel
 
 from app.libs.managment import get_app_by_env_str
@@ -8,7 +6,7 @@ FAST_API_SETTINGS_ENV_NAME = "FAST_API_SETTINGS_PATH"
 FAST_API_SETTINGS_DEFAULT_PATH = "app.settings.settings:Settings"
 
 
-def get_settings(settings_import_str: str | None = None) -> Type[BaseModel]:
+def get_settings(settings_import_str: str | None = None) -> type[BaseModel]:
     """
     Examples:
         Code above will return Pydentic Settings object

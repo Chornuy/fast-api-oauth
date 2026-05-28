@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-from typing import Annotated, ClassVar, Optional
+from typing import Annotated, ClassVar
 
 from beanie import Indexed, Insert, Update, before_event
 from pydantic import EmailStr, Field
@@ -16,7 +16,7 @@ class UserRoles(str, Enum):
 
 
 class User(DocumentRepository):
-    name: Optional[str | None] = Field(max_length=200, default=None)
+    name: str | None | None = Field(max_length=200, default=None)
     email: Annotated[EmailStr, Indexed(unique=True)] = Field(max_length=200)
     password: str = Field(max_length=200)
     verified: bool = False

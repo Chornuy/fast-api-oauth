@@ -1,7 +1,7 @@
 from beanie import init_beanie
 from pymongo import AsyncMongoClient
 
-from app.libs.beanie_odm_ext.exceptions import MongoDbException
+from app.libs.beanie_odm_ext.exceptions import MongoDbError
 
 
 class MongoDB:
@@ -15,7 +15,7 @@ class MongoDB:
 
         """
         if not cls.db_client:
-            raise MongoDbException("Mongo client was not inited, call init method first")
+            raise MongoDbError("Mongo client was not inited, call init method first")
         return cls.db_client
 
     @classmethod

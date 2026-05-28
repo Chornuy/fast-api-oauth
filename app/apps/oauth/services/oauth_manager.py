@@ -3,11 +3,11 @@ from datetime import datetime
 from app.apps.oauth.models import OAuthCode
 from app.apps.oauth.services.constants import TokenType
 from app.apps.oauth.services.exceptions import (
-    AuthCodeNotFound,
-    WrongAuthCode,
-    WrongTokenType,
-    UnsupportedTokenType,
-    UnknownToken,
+    AuthCodeNotFoundError,
+    UnknownTokenError,
+    UnsupportedTokenTypeError,
+    WrongAuthCodeError,
+    WrongTokenTypeError,
 )
 from app.apps.oauth.services.token_manager import UserTokenManager
 from app.apps.user.models import User
@@ -22,7 +22,10 @@ class OauthFlowManager(BaseOauthFlowManager):
 
     grant_type_key = "grant_type"
 
-    supported_grant_types = [GrantTypeEnum.authorization_code.value, GrantTypeEnum.refresh_token.value]
+    supported_grant_types = [
+        GrantTypeEnum.authorization_code.value,
+        GrantTypeEnum.refresh_token.value,
+    ]
 
     async def refresh_token(self, refresh_token: str) -> dict[str, str]:
         """
@@ -38,7 +41,7 @@ class OauthFlowManager(BaseOauthFlowManager):
         await self.token_manager.is_blacklisted(refresh_token)
         return await self.token_manager.refresh_token(refresh_token)
 
-    async def authorization_code(self, code: str, redirect_uri: str, datetime_obj: datetime = datetime.now()):
+    async def authorization_code(self, code: str, redirect_uri: str, datetime_obj: datetime = None):
         """
 
         Args:
@@ -49,15 +52,17 @@ class OauthFlowManager(BaseOauthFlowManager):
         Returns:
 
         """
+        datetime_obj = datetime_obj or datetime.now()
+
         code_obj = await self.auth_code_manager.get_code(code)
 
         if not code_obj:
-            raise AuthCodeNotFound("Code was not found")
+            raise AuthCodeNotFoundError("Code was not found")
 
         is_valid = await code_obj.is_valid(datetime_obj=datetime_obj, redirect_uri=redirect_uri)
 
         if not is_valid:
-            raise WrongAuthCode("Code not pass verification")
+            raise WrongAuthCodeError("Code not pass verification")
 
         user = await code_obj.get_user()
         return await self.token_manager.create_token_pair(user)
@@ -75,18 +80,21 @@ class OauthFlowManager(BaseOauthFlowManager):
         return await self.auth_code_manager.create(redirect_uri=redirect_uri, user=user)
 
     async def revoke_token(
-        self, user: User, token: str, token_type_hint: str = TokenType.refresh_token.value
+        self,
+        user: User,
+        token: str,
+        token_type_hint: str = TokenType.refresh_token.value,
     ) -> RefreshToken:
         if not TokenType.has_value(token_type_hint):
-            raise WrongTokenType("Unsupported token type")
+            raise WrongTokenTypeError("Unsupported token type")
 
         if token_type_hint != TokenType.refresh_token.value:
-            raise UnsupportedTokenType("Unsupported token type")
+            raise UnsupportedTokenTypeError("Unsupported token type")
 
         refresh_token = self.token_manager.get_refresh_token_from_str(token)
         refresh_token = await self.token_manager.revoke_refresh_token(user=user, refresh_token=refresh_token)
         if not refresh_token:
-            raise UnknownToken("Unknown token")
+            raise UnknownTokenError("Unknown token")
 
         return refresh_token
 

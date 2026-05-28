@@ -23,6 +23,5 @@ class MongoSessionMiddleware(BaseHTTPMiddleware):
                 return await call_next(request)
 
         except Exception as exc:
-
             logger.error(f"Middleware caught error on {request.url.path}: {exc}")
             raise exc

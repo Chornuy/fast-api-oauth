@@ -1,4 +1,5 @@
-from typing import Any, Callable, Coroutine, Type, Union
+from collections.abc import Callable, Coroutine
+from typing import Any
 
 from fastapi import Request, Response
 from fastapi.exceptions import RequestValidationError
@@ -8,7 +9,7 @@ from app.core.exception_handler.validations import request_validation_exception_
 
 def root_exception_handlers() -> (
     dict[
-        Union[int, Type[Exception]],
+        int | type[Exception],
         Callable[[Request, Any], Coroutine[Any, Any, Response]],
     ]
 ):

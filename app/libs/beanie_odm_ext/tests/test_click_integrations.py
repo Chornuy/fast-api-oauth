@@ -5,7 +5,7 @@ from pymongo.asynchronous.client_session import AsyncClientSession
 from pytest_mock import MockerFixture
 
 from app.libs.beanie_odm_ext.session import WireSession
-from app.libs.beanie_odm_ext.tests.fixtures.models import Product, Category
+from app.libs.beanie_odm_ext.tests.fixtures.models import Category, Product
 from app.libs.beanie_odm_ext.transaction import Atomic
 from app.libs.click_cli.command_cli import FastApiCli
 from app.libs.click_cli.fast_api_cli import FastAPICli

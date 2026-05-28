@@ -4,8 +4,8 @@ from app.apps.registration.api.schemas import UserEmailScheme, UserResetPassword
 from app.apps.registration.services.email import send_reset_password_email
 from app.apps.user.models import User
 from app.core.auth.verification_token import create_token, verify_token
-from app.core.exceptions.validation import CustomValidationException
-from app.libs.beanie_odm_ext.exceptions import ObjectNotFound
+from app.core.exceptions.validation import CustomValidationError
+from app.libs.beanie_odm_ext.exceptions import ObjectNotFoundError
 
 
 async def generate_reset_password_token(user_email_scheme: UserEmailScheme, request: Request) -> User:
@@ -20,7 +20,7 @@ async def generate_reset_password_token(user_email_scheme: UserEmailScheme, requ
     """
     user = await User.repository.ger_user_by_email(user_email_scheme.email)
     if not user:
-        raise CustomValidationException(loc=("email",), msg="Invalid user email")
+        raise CustomValidationError(loc=("email",), msg="Invalid user email")
 
     reset_password_token_url = str(request.url_for("reset_password", reset_password_token=create_token(user.email)))
 
@@ -40,11 +40,11 @@ async def user_reset_password(reset_password_token: str, reset_password_scheme: 
     """
     email = verify_token(reset_password_token)
     if not email:
-        raise CustomValidationException(loc=("reset_password_token",), msg="Invalid reset token")
+        raise CustomValidationError(loc=("reset_password_token",), msg="Invalid reset token")
 
     try:
         user = await User.repository.reset_password_by_email(email=email, password=reset_password_scheme.password)
-    except ObjectNotFound:
-        raise CustomValidationException(loc=("reset_password_token",), msg="Invalid reset token")
+    except ObjectNotFoundError as error:
+        raise CustomValidationError(loc=("reset_password_token",), msg="Invalid reset token") from error
 
     return user

@@ -47,12 +47,13 @@ services:
       dockerfile: .provisions/docker/fast-api/dev/Dockerfile
     volumes:
       - .:/var/app:z
+      - /var/app/.venv
       - .provisions/docker-fast-api-startup-script/:/docker-startup-script
     env_file:
       - .env
     depends_on:
       - mongo
     ports:
-      - "8080:8080"
+      - "8081:8081"
     networks:
       - fast-api-oauth
