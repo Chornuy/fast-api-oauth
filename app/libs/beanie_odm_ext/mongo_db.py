@@ -1,50 +1,57 @@
+import asyncio
+
 from beanie import init_beanie
 from pymongo import AsyncMongoClient
 
 from app.libs.beanie_odm_ext.exceptions import MongoDbError
 
 
-class MongoDB:
-    db_client: AsyncMongoClient | None = None
+class MongoClientManager:
+    """
+    An isolated instance of the database connection engine.
+    Every instance is bound strictly to the event loop it was initialized on.
+    """
 
-    @classmethod
-    def get_client(cls) -> AsyncMongoClient:
-        """
+    def __init__(self):
+        self._client: AsyncMongoClient | None = None
+        self._db_name: str | None = None
+        self._loop: asyncio.AbstractEventLoop | None = None
 
-        Returns:
+    def get_client(self) -> AsyncMongoClient:
+        current_loop = asyncio.get_running_loop()
+        if not self._client or self._loop != current_loop:
+            raise MongoDbError("Database engine not initialized or event loop changed. Call init_beanie_db first.")
+        return self._client
 
-        """
-        if not cls.db_client:
-            raise MongoDbError("Mongo client was not inited, call init method first")
-        return cls.db_client
+    async def init_beanie_db(
+        self,
+        db_name: str,
+        mongo_connection_params: dict,
+        models_list: list,
+    ) -> None:
+        current_loop = asyncio.get_running_loop()
 
-    @classmethod
-    def init_client(cls, **mongo_connection_kwargs) -> AsyncMongoClient | None:
-        """
+        # If a client exists but belongs to an old or closed context, force clear it
+        if self._client is not None:
+            if self._loop != current_loop:
+                self._client = None
 
-        Args:
-            **mongo_connection_kwargs:
+        self._db_name = db_name
+        self._loop = current_loop
 
-        Returns:
+        # Instantiate fresh connection explicitly bound to the current running loop context
+        self._client = AsyncMongoClient(**mongo_connection_params)
+        await init_beanie(database=self._client[db_name], document_models=models_list)
 
-        """
-        if cls.db_client:
-            return cls.db_client
+    async def close(self) -> None:
+        if self._client:
+            try:
+                await self._client.close()
+            except Exception:
+                pass
+            finally:
+                self._client = None
+                self._loop = None
 
-        cls.db_client = AsyncMongoClient(**mongo_connection_kwargs)
-        return cls.db_client
 
-    @classmethod
-    async def init_beanie_db(cls, db_name: str, mongo_connection_params: dict, models_list: list):
-        """
-
-        Args:
-            db_name (str):
-            mongo_connection_params (dict):
-            models_list (list):
-
-        Returns:
-
-        """
-        client = cls.init_client(**mongo_connection_params)
-        await init_beanie(database=client[db_name], document_models=models_list)
+mongo_client_manager: MongoClientManager = MongoClientManager()

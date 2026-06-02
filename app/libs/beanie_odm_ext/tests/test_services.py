@@ -4,7 +4,7 @@ from pymongo import AsyncMongoClient
 from pymongo.asynchronous.client_session import _SESSION, AsyncClientSession
 from pytest_mock import MockerFixture
 
-from app.libs.beanie_odm_ext.mongo_db import MongoDB
+from app.libs.beanie_odm_ext.mongo_db import mongo_client_manager
 from app.libs.beanie_odm_ext.tests.fixtures import service
 from app.libs.beanie_odm_ext.tests.fixtures.models import Category, Product
 from app.libs.beanie_odm_ext.transaction import Atomic
@@ -13,7 +13,7 @@ from app.utils.mongo_conf import transform_settings_to_mongo
 
 
 class TestServicesIntegration:
-    @pytest.fixture(autouse=True)
+    @pytest_asyncio.fixture(autouse=True, scope="function", loop_scope="class")
     async def cleanup_mongo(self):
         """
         Ensure the collections are empty before and after the CLI runs.
@@ -25,16 +25,17 @@ class TestServicesIntegration:
         await Category.get_pymongo_collection().delete_many({})
         await Product.get_pymongo_collection().delete_many({})
 
-    @pytest_asyncio.fixture(scope="class", autouse=True)
+    @pytest_asyncio.fixture(autouse=True, scope="class", loop_scope="class")
     async def init_beanie(self):
-        await MongoDB.init_beanie_db(
+        await mongo_client_manager.init_beanie_db(
             db_name=settings.MONGO_DB_NAME,
             mongo_connection_params=transform_settings_to_mongo(settings),
             models_list=[Category, Product],
         )
         yield
+        await mongo_client_manager.close()
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio(loop_scope="class")
     async def test_service_decorator_success(self, mocker: MockerFixture):
         spy_commit = mocker.spy(Atomic, "_commit_with_retry")
 
@@ -44,7 +45,7 @@ class TestServicesIntegration:
         assert spy_commit.call_count == 1
         assert await Product.count() == 1
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio(loop_scope="class")
     async def test_service_decorator_rollback(self, mocker: MockerFixture):
         spy_abort = mocker.spy(AsyncClientSession, "abort_transaction")
 
@@ -54,7 +55,7 @@ class TestServicesIntegration:
         assert spy_abort.called
         assert await Product.count() == 0
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio(loop_scope="class")
     async def test_service_context_success(self, mocker: MockerFixture):
         spy_atomic = mocker.spy(Atomic, "__aenter__")
 
@@ -63,14 +64,14 @@ class TestServicesIntegration:
         assert spy_atomic.called
         assert await Product.find_one({"name": "product_with_service_context"}) is not None
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio(loop_scope="class")
     async def test_service_context_rollback(self, mocker: MockerFixture):
         with pytest.raises(Exception, match="Product creation failed"):
             await service.create_product_using_context_error()
 
         assert await Product.count() == 0
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio(loop_scope="class")
     async def test_decorator_params_propagation(self, mocker: MockerFixture, init_beanie) -> None:
         # 1. Spy on PyMongo Async's core methods
         # We spy on the classes to catch the parameters at the "metal"
@@ -101,7 +102,7 @@ class TestServicesIntegration:
         count = await Product.find_all().count()
         assert count == 1
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio(loop_scope="class")
     async def test_context_params_propagation(self, mocker: MockerFixture, init_beanie) -> None:
         # 1. Spy on PyMongo Async's core methods
         # We spy on the classes to catch the parameters at the "metal"
@@ -132,11 +133,11 @@ class TestServicesIntegration:
         count = await Product.find_all().count()
         assert count == 1
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio(loop_scope="class")
     async def test_beanie_triggers_pymongo_session_lookup(self, mocker: MockerFixture, init_beanie) -> None:
         spy_get_bound = mocker.spy(AsyncMongoClient, "_get_bound_session")
 
-        client = MongoDB.get_client()
+        client = mongo_client_manager.get_client()
         async with client.start_session() as session:
             async with session.bind():
                 token = _SESSION.set(session)

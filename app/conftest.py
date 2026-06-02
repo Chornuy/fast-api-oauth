@@ -1,4 +1,3 @@
-import asyncio
 from collections.abc import AsyncGenerator
 from pathlib import Path
 
@@ -18,46 +17,36 @@ TEST_USER_EMAIL = "test@gmail.com"
 TEST_USER_PASS = "qw123321"
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def base_dir():
     return Path(__file__).parent.parent
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def app_bootstrap():
     return bootstrap
 
 
-@pytest.fixture(scope="session")
-def event_loop():
-    """Fix for AsyncMongoClient in different event loop
-    Link: https://stackoverflow.com/questions/61022713/pytest-asyncio-has-a-closed-event-loop-but-only-when-running-all-tests
-    Returns:
-
-    """
-    try:
-        loop = asyncio.get_running_loop()
-    except RuntimeError:
-        loop = asyncio.new_event_loop()
-    yield loop
-    loop.close()
-
-
-@pytest_asyncio.fixture
+@pytest_asyncio.fixture(scope="function")
 async def fast_api() -> AsyncGenerator[FastAPI, None]:
     fastapi = get_fast_api_app()
     async with LifespanManager(fastapi, startup_timeout=100, shutdown_timeout=100):
         yield fastapi
 
 
-@pytest_asyncio.fixture
-async def persistent_user(fast_api: FastAPI) -> User:
+@pytest_asyncio.fixture(scope="function")
+async def persistent_user(clear_db, fast_api: FastAPI) -> User:
+    existing_user = await User.find_one(User.email == TEST_USER_EMAIL)
+    if existing_user:
+        return existing_user
+
     return await UserFactory.create_async(
-        password=UserFactory.__model__.make_password(TEST_USER_PASS), email=TEST_USER_EMAIL
+        password=UserFactory.__model__.make_password(TEST_USER_PASS),
+        email=TEST_USER_EMAIL,
     )
 
 
-@pytest_asyncio.fixture
+@pytest_asyncio.fixture(scope="function")
 async def api_client(clear_db, fast_api: FastAPI):
     """api client fixture."""
     server_name = "https://localhost"
@@ -65,9 +54,11 @@ async def api_client(clear_db, fast_api: FastAPI):
         yield ac
 
 
-@pytest_asyncio.fixture
+@pytest_asyncio.fixture(scope="function")
 async def clear_db(app_bootstrap: ApplicationBootStrap):
-    yield
     for model in bootstrap.context["beanie_models"]:
-        await model.get_pymongo_collection().drop()
-        await model.get_pymongo_collection().drop_indexes()
+        try:
+            # delete_many({}) is safer and faster than dropping collection indexes entirely
+            await model.get_pymongo_collection().delete_many({})
+        except Exception:
+            pass

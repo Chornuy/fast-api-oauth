@@ -18,7 +18,7 @@ def get_fixture_path(base_dir: Path, fixture_path: list[str]):
 
 
 class TestCommandCli:
-    @pytest_asyncio.fixture(scope="class", autouse=True)
+    @pytest_asyncio.fixture(autouse=True)
     def fast_api_cli_app(self) -> FastApiCli:
         return get_fast_api_cli("app.libs.click_cli.tests.fixture_commands.fixture_fast_api_cli:fast_api_cli_test")
 

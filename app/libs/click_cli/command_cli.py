@@ -13,7 +13,7 @@ from app.utils.module_loading import cached_import_module
 pass_fast_api = click.make_pass_decorator(FastAPI)
 
 
-class FastApiCli(click.MultiCommand):
+class FastApiCli(click.Group):
     commands = {}
 
     command_class: type[Command] | None = None

@@ -16,7 +16,7 @@ from app.libs.managment import get_fast_api_app
 
 
 class TestFastApiIntegration:
-    @pytest.fixture(autouse=True)
+    @pytest_asyncio.fixture(autouse=True, scope="function", loop_scope="class")
     async def cleanup_mongo(self):
         """
         Ensure the collections are empty before and after the CLI runs.
@@ -31,13 +31,13 @@ class TestFastApiIntegration:
         await Category.get_pymongo_collection().delete_many({})
         await Product.get_pymongo_collection().delete_many({})
 
-    @pytest_asyncio.fixture
+    @pytest_asyncio.fixture(autouse=True, scope="function", loop_scope="class")
     async def fast_api_app(self) -> AsyncGenerator[FastAPI, None]:
         fast_api_app = get_fast_api_app(TEST_FAST_API_STR)
         async with LifespanManager(fast_api_app, startup_timeout=100, shutdown_timeout=100):
             yield fast_api_app
 
-    @pytest_asyncio.fixture
+    @pytest_asyncio.fixture(autouse=True, scope="function", loop_scope="class")
     async def api_client(self, fast_api_app: FastAPI):
         """api client fixture."""
         server_name = "https://localhost"
@@ -47,7 +47,7 @@ class TestFastApiIntegration:
         ) as ac:
             yield ac
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio(loop_scope="class")
     async def test_api_create_product_success(
         self, mocker: MockerFixture, api_client: AsyncClient, fast_api_app
     ) -> None:
@@ -77,7 +77,7 @@ class TestFastApiIntegration:
         product = await Product.find_one(Product.name == "success_product")
         assert product is not None
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio(loop_scope="class")
     async def test_api_transaction_rollback(
         self, mocker: MockerFixture, api_client: AsyncClient, fast_api_app
     ) -> None:
@@ -101,7 +101,7 @@ class TestFastApiIntegration:
         product = await Product.find_one(Product.name == "product_with_error")
         assert product is None, "Data leaked! Rollback failed."
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio(loop_scope="class")
     async def test_api_get_product_flow(self, mocker: MockerFixture, api_client: AsyncClient) -> None:
         # 1. Seed
         spy_session_enter = mocker.spy(WireSession, "__aenter__")

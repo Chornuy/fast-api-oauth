@@ -15,7 +15,7 @@ from app.libs.managment import get_fast_api_app
 
 
 class TestFastApiMiddleWareIntegration:
-    @pytest.fixture(autouse=True)
+    @pytest_asyncio.fixture(autouse=True, scope="function", loop_scope="class")
     async def cleanup_mongo(self):
         """
         Ensure the collections are empty before and after the CLI runs.
@@ -30,13 +30,13 @@ class TestFastApiMiddleWareIntegration:
         await Category.get_pymongo_collection().delete_many({})
         await Product.get_pymongo_collection().delete_many({})
 
-    @pytest_asyncio.fixture
+    @pytest_asyncio.fixture(autouse=True, scope="class", loop_scope="class")
     async def fast_api_app(self) -> AsyncGenerator[FastAPI, None]:
         fast_api_app = get_fast_api_app("app.libs.beanie_odm_ext.fastapi.tests.fixture.fast_api:test_fast_api_app")
         async with LifespanManager(fast_api_app, startup_timeout=100, shutdown_timeout=100):
             yield fast_api_app
 
-    @pytest_asyncio.fixture
+    @pytest_asyncio.fixture(autouse=True, scope="class", loop_scope="class")
     async def api_client(self, fast_api_app: FastAPI):
         """api client fixture."""
         server_name = "https://localhost"
@@ -46,7 +46,7 @@ class TestFastApiMiddleWareIntegration:
         ) as ac:
             yield ac
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio(loop_scope="class")
     async def test_api_middleware_create_product_success(
         self, mocker: MockerFixture, api_client: AsyncClient, fast_api_app
     ) -> None:
@@ -74,7 +74,7 @@ class TestFastApiMiddleWareIntegration:
         product = await Product.find_one(Product.name == "success_product")
         assert product is not None
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio(loop_scope="class")
     async def test_api_middleware_transaction_rollback(
         self, mocker: MockerFixture, api_client: AsyncClient, fast_api_app
     ) -> None:
@@ -93,7 +93,7 @@ class TestFastApiMiddleWareIntegration:
         product = await Product.find_one(Product.name == "product_with_error")
         assert product is None, "Data leaked! Rollback failed."
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio(loop_scope="class")
     async def test_api_middleware_get_product_flow(self, mocker: MockerFixture, api_client: AsyncClient) -> None:
         spy_session_enter = mocker.spy(WireSession, "__aenter__")
         spy_session_exit = mocker.spy(WireSession, "__aexit__")

@@ -8,6 +8,10 @@ from app.apps.user.models import User
 
 @pytest.mark.asyncio
 async def test_create_user(mocker: MockerFixture, api_client: AsyncClient, fast_api: FastAPI):
+    user = await User.find_one(User.email == "vasya@gmail.com")
+    if user:
+        await user.delete()
+
     send_email_mock = mocker.patch("app.apps.registration.services.email.send_email_async")
 
     user_data = {"email": "vasya@gmail.com", "password1": "qw123321", "password2": "qw123321"}
@@ -22,6 +26,7 @@ async def test_create_user(mocker: MockerFixture, api_client: AsyncClient, fast_
     assert user
 
     send_email_mock.assert_called()
+    await user.delete()
 
 
 @pytest.mark.asyncio
