@@ -3,8 +3,10 @@ from pathlib import Path
 import pytest
 
 from app.libs.app_loader.middlewares.click import ClickCommandLoader
-from app.libs.app_loader.middlewares.exceptions import RuntimeMiddlewareException
-from app.libs.app_loader.middlewares.tests.fixture import get_base_bootstrap_config_fixture
+from app.libs.app_loader.middlewares.exceptions import RuntimeMiddlewareError
+from app.libs.app_loader.middlewares.tests.fixture import (
+    get_base_bootstrap_config_fixture,
+)
 
 
 def get_apps_context_fixture(base_dir: Path):
@@ -33,13 +35,13 @@ class TestClickCommandLoader:
         context = command_loader.load(context=context, config={})
 
         expected_result = [
-                              "app.libs.app_loader.middlewares.tests.fixture_click.app_a.commands.command_b",
-                              "app.libs.app_loader.middlewares.tests.fixture_click.app_a.commands.command_a",
-                          ] + command_loader.additional_cli_modules
+            "app.libs.app_loader.middlewares.tests.fixture_click.app_a.commands.command_b",
+            "app.libs.app_loader.middlewares.tests.fixture_click.app_a.commands.command_a",
+        ] + command_loader.additional_cli_modules
 
         assert "commands_modules" in context.keys()
         assert context["commands_modules"] == expected_result
 
     def test_app_loader_not_run(self, base_dir: Path, command_loader: ClickCommandLoader) -> None:
-        with pytest.raises(RuntimeMiddlewareException):
+        with pytest.raises(RuntimeMiddlewareError):
             command_loader.load(context={}, config={})

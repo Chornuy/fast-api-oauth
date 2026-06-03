@@ -1,10 +1,8 @@
-from typing import Optional
-
 from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel, model_validator
 
 from app.apps.oauth.services.constants import TokenType
-from app.core.exceptions.validation import CustomValidationException
+from app.core.exceptions.validation import CustomValidationError
 from app.libs.oauth_flow.constants import GrantTypeEnum
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -12,14 +10,14 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 class OauthScheme(BaseModel):
     grant_type: GrantTypeEnum
-    code: Optional[str] = None
-    redirect_uri: Optional[str] = None
-    refresh_token: Optional[str] = None
+    code: str | None = None
+    redirect_uri: str | None = None
+    refresh_token: str | None = None
 
     @staticmethod
     def validate_refresh_token_fields(data: dict) -> dict:
         if not data.get("refresh_token"):
-            raise CustomValidationException(loc=("refresh_token",), msg="refresh token field is required")
+            raise CustomValidationError(loc=("refresh_token",), msg="refresh token field is required")
         try:
             del data["redirect_uri"]
             del data["code"]
@@ -50,7 +48,7 @@ class OauthScheme(BaseModel):
         require_fields = ["code", "redirect_uri"]
         for require_field in require_fields:
             if not data.get(require_field):
-                raise CustomValidationException(loc=(require_field,), msg=f"{require_field} field is required")
+                raise CustomValidationError(loc=(require_field,), msg=f"{require_field} field is required")
         try:
             del data["refresh_token"]
         except KeyError:
@@ -92,8 +90,8 @@ class TokenRevokeScheme(BaseModel):
 class TokenPair(BaseModel):
     token_type: str = "Bearer"
     access_token: str
-    refresh_token: Optional[str] = None
-    expires_in: Optional[int] = None
+    refresh_token: str | None = None
+    expires_in: int | None = None
 
 
 class UserResponseScheme(BaseModel):

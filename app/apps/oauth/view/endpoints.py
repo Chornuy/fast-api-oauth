@@ -1,12 +1,14 @@
 from enum import Enum
-from typing import Union
+from typing import (
+    Annotated,  # type: ignore [attr-defined]
+)
 
 from fastapi import APIRouter, Depends, Query
 from fastapi.responses import HTMLResponse
 from pydantic import HttpUrl
 from starlette.requests import Request
 from starlette.templating import Jinja2Templates
-from typing_extensions import Annotated, Doc  # type: ignore [attr-defined]
+from typing_extensions import Doc
 
 from app.apps.oauth.app import templates_path
 
@@ -35,7 +37,7 @@ class LoginFlowQuery:
             ),
         ],
         state: Annotated[str, Query()] = None,
-        response_type: Annotated[Union[str, None], Query(enum=["code"])] = "code",
+        response_type: Annotated[str | None, Query(enum=["code"])] = "code",
     ):
         self.response_type = response_type
         self.redirect_uri = redirect_uri

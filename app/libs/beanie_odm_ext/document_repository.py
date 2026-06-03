@@ -9,7 +9,7 @@ from app.libs.beanie_odm_ext.repository import BaseRepository
 
 class DocumentRepositoryMeta(ModelMetaclass):
     def __new__(
-        mcs,
+        cls,
         cls_name: str,
         bases: tuple[type[Any], ...],
         namespace: dict[str, Any],
@@ -24,7 +24,7 @@ class DocumentRepositoryMeta(ModelMetaclass):
 
         if not parents:
             return new_super(
-                mcs,
+                cls,
                 cls_name,
                 bases,
                 namespace,
@@ -35,7 +35,7 @@ class DocumentRepositoryMeta(ModelMetaclass):
             )
 
         new_cls = new_super(
-            mcs,
+            cls,
             cls_name,
             bases,
             namespace,

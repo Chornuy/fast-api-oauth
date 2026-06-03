@@ -1,5 +1,3 @@
-from typing import Optional
-
 from pydantic import BaseModel
 
 from app.core.schemas.constants import ActionStatusCode
@@ -8,7 +6,7 @@ from app.core.schemas.constants import ActionStatusCode
 class ResourceActionResponse(BaseModel):
     resource_id: str | int
     status_code: ActionStatusCode
-    message: Optional[str] = None
+    message: str | None = None
 
 
 class SuccessAction(ResourceActionResponse):

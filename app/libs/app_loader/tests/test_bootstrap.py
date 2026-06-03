@@ -1,13 +1,15 @@
 from pathlib import Path, PosixPath
-from typing import Type
 from unittest.mock import call
 
 import pytest
 from pytest_mock import MockerFixture
 
 from app.libs.app_loader.bootstrap import ApplicationBootStrap
-from app.libs.app_loader.middlewares.exceptions import NotInstanceOfBaseMiddleware
-from app.libs.app_loader.tests.middleware_fixtures import FixtureTestMiddleware, FixtureTestResultAfterTestMiddleware
+from app.libs.app_loader.middlewares.exceptions import NotInstanceOfBaseMiddlewareError
+from app.libs.app_loader.tests.middleware_fixtures import (
+    FixtureTestMiddleware,
+    FixtureTestResultAfterTestMiddleware,
+)
 from app.libs.app_loader.tests.pipeline_fixutres import (
     broken_pipeline,
     not_implemented_method_pipeline,
@@ -33,34 +35,39 @@ class BootstrapFixtures:
 
     @pytest.fixture
     def application_bootstrap_working(
-        self, application_bootstrap_cls: Type[ApplicationBootStrap]
+        self, application_bootstrap_cls: type[ApplicationBootStrap]
     ) -> ApplicationBootStrap:
         return application_bootstrap_cls(base_dir=Path(""), app_dir=Path(""), loader_pipeline=success_flow_pipeline)
 
     @pytest.fixture()
     def application_loader_with_skip_middleware(
-        self, application_bootstrap_cls: Type[ApplicationBootStrap]
+        self, application_bootstrap_cls: type[ApplicationBootStrap]
     ) -> ApplicationBootStrap:
         return application_bootstrap_cls(base_dir=Path(""), app_dir=Path(""), loader_pipeline=skip_pipeline)
 
     @pytest.fixture()
     def application_loader_with_error_middleware(
-        self, application_bootstrap_cls: Type[ApplicationBootStrap]
+        self, application_bootstrap_cls: type[ApplicationBootStrap]
     ) -> ApplicationBootStrap:
         return application_bootstrap_cls(base_dir=Path(""), app_dir=Path(""), loader_pipeline=broken_pipeline)
 
     @pytest.fixture()
     def application_loader_with_not_implemented_middleware(
-        self, application_bootstrap_cls: Type[ApplicationBootStrap]
+        self, application_bootstrap_cls: type[ApplicationBootStrap]
     ) -> ApplicationBootStrap:
         return application_bootstrap_cls(
-            base_dir=Path(""), app_dir=Path(""), loader_pipeline=not_implemented_method_pipeline
+            base_dir=Path(""),
+            app_dir=Path(""),
+            loader_pipeline=not_implemented_method_pipeline,
         )
 
 
 class TestBaseFunctionality(BootstrapFixtures):
     def test_bootstrap_imports(self, application_bootstrap_working: ApplicationBootStrap) -> None:
-        expected_classes_name = [FixtureTestMiddleware.__name__, FixtureTestResultAfterTestMiddleware.__name__]
+        expected_classes_name = [
+            FixtureTestMiddleware.__name__,
+            FixtureTestResultAfterTestMiddleware.__name__,
+        ]
 
         application_bootstrap_working.load()
 
@@ -105,7 +112,10 @@ class TestBaseFunctionality(BootstrapFixtures):
             [
                 call.first_pipeline(
                     context={
-                        "bootstrap_config": {"app_dir": PosixPath(""), "base_dir": PosixPath("")},
+                        "bootstrap_config": {
+                            "app_dir": PosixPath(""),
+                            "base_dir": PosixPath(""),
+                        },
                         "first_pipeline_result": "ok",
                         "side_effect_second_pipeline": "ok",
                     },
@@ -113,7 +123,10 @@ class TestBaseFunctionality(BootstrapFixtures):
                 ),
                 call.second_pipeline(
                     context={
-                        "bootstrap_config": {"app_dir": PosixPath(""), "base_dir": PosixPath("")},
+                        "bootstrap_config": {
+                            "app_dir": PosixPath(""),
+                            "base_dir": PosixPath(""),
+                        },
                         "first_pipeline_result": "ok",
                         "side_effect_second_pipeline": "ok",
                     },
@@ -130,7 +143,7 @@ class TestBaseFunctionality(BootstrapFixtures):
         assert application_bootstrap_working._state.loaded is True
 
     def test_wrong_subclass(self, application_loader_with_error_middleware: ApplicationBootStrap):
-        with pytest.raises(NotInstanceOfBaseMiddleware):
+        with pytest.raises(NotInstanceOfBaseMiddlewareError):
             application_loader_with_error_middleware.load()
 
     def test_not_implemented(self, application_loader_with_not_implemented_middleware: ApplicationBootStrap):

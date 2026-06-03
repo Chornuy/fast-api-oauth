@@ -1,6 +1,6 @@
 from pymongo.read_concern import ReadConcern
 
-from app.libs.beanie_odm_ext import transaction, session
+from app.libs.beanie_odm_ext import session, transaction
 from app.libs.beanie_odm_ext.session import auto_session
 from app.libs.beanie_odm_ext.tests.fixtures.models import Category, Product
 

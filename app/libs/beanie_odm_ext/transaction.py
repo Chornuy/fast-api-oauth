@@ -1,7 +1,7 @@
 import logging
-from collections.abc import Callable, Awaitable
+from collections.abc import Awaitable, Callable
 from contextlib import AsyncContextDecorator
-from typing import ParamSpec, TypeVar, Any, overload, Optional
+from typing import Any, ParamSpec, TypeVar, overload
 
 from pymongo.asynchronous.client_session import _SESSION
 from pymongo.errors import ConnectionFailure, OperationFailure
@@ -72,10 +72,10 @@ def atomic(func: Callable[P, Awaitable[R]], **kwargs: Any) -> Callable[P, Awaita
 
 
 @overload
-def atomic(func: Optional[Callable[P, Awaitable[R]]] = None, **kwargs: Any) -> Atomic: ...
+def atomic(func: Callable[P, Awaitable[R]] | None = None, **kwargs: Any) -> Atomic: ...
 
 
-def atomic(func: Optional[Callable[P, Awaitable[R]]] = None, **transaction_kwargs) -> Awaitable[AF] | Atomic:
+def atomic(func: Callable[P, Awaitable[R]] | None = None, **transaction_kwargs) -> Awaitable[AF] | Atomic:
     if callable(func):
         return Atomic(**transaction_kwargs)(func)
     else:

@@ -1,9 +1,9 @@
 exclude: '^docs/'
-default_stages: [commit]
+default_stages: [ pre-commit ]
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v4.6.0  # Upgraded to a more modern, stable release
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
@@ -17,23 +17,18 @@ repos:
       - id: check-docstring-first
       - id: detect-private-key
 
-  - repo: https://github.com/psf/black
-    rev: 23.3.0
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.4
     hooks:
-      - id: black
+      # Replaces flake8 and isort (lints, auto-fixes common bugs, and sorts imports)
+      - id: ruff
+        args: [ --fix ]
 
-  - repo: https://github.com/PyCQA/isort
-    rev: 5.12.0
-    hooks:
-      - id: isort
-
-  - repo: https://github.com/PyCQA/flake8
-    rev: 6.0.0
-    hooks:
-      - id: flake8
+      # Replaces black (enforces your 119-character layout preference dynamically)
+      - id: ruff-format
 
 # sets up .pre-commit-ci.yaml to ensure pre-commit dependencies stay up to date
 ci:
   autoupdate_schedule: weekly
-  skip: []
+  skip: [ ]
   submodules: false

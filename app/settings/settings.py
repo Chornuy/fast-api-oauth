@@ -45,7 +45,6 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def assemble_db_connection(self):
-
         query_params = {"authSource": self.MONGO_DB_AUTH_SOURCE, "replicaSet": self.MONGO_DB_REPLICA_SET}
 
         if self.MONGO_DB_AUTH_MECHANISM:

@@ -1,7 +1,7 @@
 from typing import Annotated
 from urllib.parse import urlencode
 
-from fastapi import APIRouter, Form, Depends
+from fastapi import APIRouter, Depends, Form
 from starlette.responses import RedirectResponse
 
 from app.apps.login.api.shemes import CompleteFlowQuery

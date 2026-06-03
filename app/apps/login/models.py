@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from typing import Annotated, ClassVar
 
 from beanie import Indexed, Link
-from pydantic import HttpUrl, Field
+from pydantic import Field, HttpUrl
 
 from app.apps.oauth.repository import JwtTokenRepository, OAuthCodeRepository
 from app.apps.user.models import User
@@ -45,9 +45,9 @@ class OAuthCode(DocumentRepository):
     redirect_uri: HttpUrl
 
     # Date of creation of code
-    created_at: datetime = datetime.now()
+    created_at: datetime = Field(default_factory=datetime.now)
     # Date when code will be expired
-    expire_at: datetime = datetime.now() + DEFAULT_CODE_TIMEOUT
+    expire_at: datetime = Field(default_factory=lambda: datetime.now() + DEFAULT_CODE_TIMEOUT)
 
     # If code was checked but not pass other validation
     already_checked: bool = False
@@ -63,7 +63,7 @@ class OAuthCode(DocumentRepository):
 
         return self.user
 
-    def is_expire(self, datetime_obj: datetime = datetime.now()) -> bool:
+    def is_expire(self, datetime_obj: datetime | None = None) -> bool:
         """Check if auth code is expired
 
         Args:
@@ -72,9 +72,11 @@ class OAuthCode(DocumentRepository):
         Returns:
             bool: is code already expired
         """
+        if datetime_obj is None:
+            datetime_obj = datetime.now()
         return self.expire_at > datetime_obj
 
-    async def is_valid(self, redirect_uri: str, datetime_obj: datetime = datetime.now()) -> bool:
+    async def is_valid(self, redirect_uri: str, datetime_obj: datetime | None = None) -> bool:
         """General code check.
         Checks if code was expired, and if it was not successfully checked
 
@@ -85,6 +87,9 @@ class OAuthCode(DocumentRepository):
         Returns:
             bool: Is token is valid
         """
+        if datetime_obj is None:
+            datetime_obj = datetime.now()
+
         if not self.is_expire(datetime_obj) and not self.already_checked and self.redirect_uri == redirect_uri:
             self.already_checked = True
             await self.save()

@@ -1,6 +1,8 @@
+from typing import Annotated
+
 from fastapi import Query
 from pydantic import HttpUrl
-from typing_extensions import Annotated, Doc
+from typing_extensions import Doc
 
 
 class CompleteFlowQuery:

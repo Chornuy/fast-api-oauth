@@ -4,10 +4,10 @@ import sys
 from importlib import import_module
 from importlib.util import find_spec
 from types import ModuleType
-from typing import Any, Type
+from typing import Any
 
 
-def get_module_subclasses(models_module: ModuleType, base_cls_list: tuple) -> list[tuple[str, Type]]:
+def get_module_subclasses(models_module: ModuleType, base_cls_list: tuple) -> list[tuple[str, type]]:
     """Function to retrieve list of cls that inherited from base cls
 
     Args:
@@ -96,9 +96,9 @@ def import_string(dotted_path: str, class_separator: str = "."):
         module_path, class_name = dotted_path.rsplit(class_separator, 1)
 
     except ValueError as err:
-        raise ImportError("%s doesn't look like a module path" % dotted_path) from err
+        raise ImportError(f"{dotted_path} doesn't look like a module path") from err
 
     try:
         return cached_import_class(module_path, class_name)
     except AttributeError as err:
-        raise ImportError('Module "%s" does not define a "%s" attribute/class' % (module_path, class_name)) from err
+        raise ImportError(f'Module "{module_path}" does not define a "{class_name}" attribute/class') from err

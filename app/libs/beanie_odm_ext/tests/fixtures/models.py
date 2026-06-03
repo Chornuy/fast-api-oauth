@@ -1,5 +1,4 @@
 # class Category(DocumentWithSession):
-from typing import Optional
 
 from beanie import Document, Indexed, Link
 
@@ -12,6 +11,6 @@ class Category(Document):
 
 class Product(Document):
     name: str
-    description: Optional[str] = None
+    description: str | None = None
     price: Indexed(typ=float)
     category: Link[Category]

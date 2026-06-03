@@ -1,26 +1,27 @@
 from contextlib import asynccontextmanager
 
 from beanie import PydanticObjectId
-from fastapi import FastAPI, APIRouter
+from fastapi import APIRouter, FastAPI
 
 from app.libs.beanie_odm_ext import transaction
 from app.libs.beanie_odm_ext.fastapi.session_middleware import MongoSessionMiddleware
-from app.libs.beanie_odm_ext.mongo_db import MongoDB
+from app.libs.beanie_odm_ext.mongo_db import mongo_client_manager
 from app.libs.beanie_odm_ext.session import auto_session
-from app.libs.beanie_odm_ext.tests.fixtures.models import Product, Category
+from app.libs.beanie_odm_ext.tests.fixtures.models import Category, Product
 from app.libs.managment.conf import settings
 from app.utils.mongo_conf import transform_settings_to_mongo
 
 
 @asynccontextmanager
 async def lifespan_fixture(app: FastAPI):
-    await MongoDB.init_beanie_db(
+    await mongo_client_manager.init_beanie_db(
         db_name=settings.MONGO_DB_NAME,
         mongo_connection_params=transform_settings_to_mongo(settings),
         models_list=[Category, Product],
     )
 
     yield
+    await mongo_client_manager.close()
 
 
 router = APIRouter()
@@ -57,7 +58,7 @@ async def get_product(product_id: PydanticObjectId):
 
 @router.get("/excluded-products/{product_id}")
 @auto_session
-async def get_product(product_id: PydanticObjectId):
+async def get_product_excluded(product_id: PydanticObjectId):
     return await Product.find_one(Product.id == product_id)
 
 

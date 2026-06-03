@@ -1,5 +1,3 @@
-from typing import List, Optional
-
 from beanie import Document, Link
 from pydantic import BaseModel
 
@@ -14,7 +12,7 @@ class Vehicle(Document):
 class Fuelled(BaseModel):
     """Just a mixin"""
 
-    fuel: Optional[str]
+    fuel: str | None
 
 
 class Car(Vehicle, Fuelled):
@@ -22,4 +20,4 @@ class Car(Vehicle, Fuelled):
 
 
 class Owner(Document):
-    vehicles: Optional[List[Link[Vehicle]]]
+    vehicles: list[Link[Vehicle]] | None

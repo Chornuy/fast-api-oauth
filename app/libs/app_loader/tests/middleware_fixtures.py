@@ -1,5 +1,5 @@
 from app.libs.app_loader.middlewares.base import BaseLoaderMiddleware
-from app.libs.app_loader.middlewares.exceptions import SkipMiddlewareException
+from app.libs.app_loader.middlewares.exceptions import SkipMiddlewareError
 
 
 class FixtureTestMiddleware(BaseLoaderMiddleware):
@@ -31,4 +31,4 @@ class NotImplementLoadMethodMiddleware(BaseLoaderMiddleware):
 
 class SkippableLoaderMethodMiddleware(BaseLoaderMiddleware):
     def load(self, context: dict, config: dict):
-        raise SkipMiddlewareException("skip")
+        raise SkipMiddlewareError("skip")

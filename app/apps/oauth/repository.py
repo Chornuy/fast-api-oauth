@@ -63,7 +63,6 @@ class JwtTokenRepository(BaseRepository):
 
 
 class OAuthCodeRepository(BaseRepository):
-
     async def get_code(self, code: str):
         """
 

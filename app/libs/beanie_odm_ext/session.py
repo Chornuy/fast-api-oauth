@@ -1,7 +1,8 @@
+from collections.abc import Awaitable, Callable
 from contextlib import AsyncContextDecorator
-from typing import Callable, TypeVar, Awaitable, Any, ParamSpec, overload, Optional
+from typing import Any, ParamSpec, TypeVar, overload
 
-from app.libs.beanie_odm_ext.mongo_db import MongoDB
+from app.libs.beanie_odm_ext.mongo_db import mongo_client_manager
 
 AF = TypeVar("AF", bound=Awaitable[Callable[..., Any]])
 P = ParamSpec("P")
@@ -15,7 +16,7 @@ class WireSession(AsyncContextDecorator):
         self.session_context = None
 
     async def __aenter__(self):
-        client = MongoDB.get_client()
+        client = mongo_client_manager.get_client()
         self.session = client.start_session(**self.session_kwargs)
         self.session_context = self.session.bind()
         await self.session.__aenter__()
@@ -32,10 +33,10 @@ def auto_session(func: Callable[P, Awaitable[R]], **kwargs: Any) -> Callable[P, 
 
 
 @overload
-def auto_session(func: Optional[Callable[P, Awaitable[R]]] = None, **kwargs: Any) -> WireSession: ...
+def auto_session(func: Callable[P, Awaitable[R]] | None = None, **kwargs: Any) -> WireSession: ...
 
 
-def auto_session(func: Optional[Callable[P, Awaitable[R]]] = None, **kwargs) -> AF | WireSession:
+def auto_session(func: Callable[P, Awaitable[R]] | None = None, **kwargs) -> AF | WireSession:
     if callable(func):
         return WireSession(**kwargs)(func)
     return WireSession(**kwargs)

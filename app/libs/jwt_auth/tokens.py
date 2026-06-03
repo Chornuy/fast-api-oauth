@@ -4,7 +4,7 @@ from uuid import uuid4
 from jose import JOSEError, jwt
 
 from app.core.security.jwt import ALGORITHM
-from app.libs.jwt_auth.exceptions import InvalidJwtTokenException
+from app.libs.jwt_auth.exceptions import InvalidJwtTokenError
 from app.libs.managment.conf import settings
 from app.libs.utils.datetime import datetime_from_epoch, datetime_to_epoch
 
@@ -26,7 +26,7 @@ class Token:
             try:
                 self.payload = self.decode(token)
             except JOSEError:
-                raise InvalidJwtTokenException("Token is invalid or expired")
+                raise InvalidJwtTokenError("Token is invalid or expired") from None
 
         else:
             # New token.  Skip all the verification steps.
@@ -110,7 +110,7 @@ class Token:
         try:
             claim_value = self.payload[claim]
         except KeyError:
-            raise Exception(f"Token has no '{claim}' claim")
+            raise Exception(f"Token has no '{claim}' claim") from None
 
         claim_time = datetime_from_epoch(claim_value)
         leeway = self.leeway
