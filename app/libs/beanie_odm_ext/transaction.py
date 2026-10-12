@@ -39,6 +39,10 @@ class Atomic(AsyncContextDecorator):
         await db_session.start_transaction(**self.transaction_kwargs)
         return db_session
 
+    def _recreate_cm(self):
+        # Fresh instance per decorated call -> no shared, mutable state.
+        return type(self)(max_retry=self.max_retry, **self.transaction_kwargs)
+
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         db_session = _SESSION.get()
         if not db_session or not db_session.in_transaction:
@@ -75,7 +79,7 @@ def atomic(func: Callable[P, Awaitable[R]], **kwargs: Any) -> Callable[P, Awaita
 def atomic(func: Callable[P, Awaitable[R]] | None = None, **kwargs: Any) -> Atomic: ...
 
 
-def atomic(func: Callable[P, Awaitable[R]] | None = None, **transaction_kwargs) -> Awaitable[AF] | Atomic:
+def atomic(func: Callable[P, Awaitable[R]] | None = None, **transaction_kwargs: Any) -> Awaitable[AF] | Atomic:
     if callable(func):
         return Atomic(**transaction_kwargs)(func)
     else:
