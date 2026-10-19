@@ -425,7 +425,9 @@ dependencies = [
     { name = "beanie" },
     { name = "email-validator" },
     { name = "fastapi" },
+    { name = "fastapi-filter" },
     { name = "fastapi-mail" },
+    { name = "fastapi-pagination" },
     { name = "httpx" },
     { name = "itsdangerous" },
     { name = "passlib", extra = ["bcrypt"] },
@@ -460,10 +462,12 @@ requires-dist = [
     { name = "asgi-lifespan" },
     { name = "asyncclick" },
     { name = "bcrypt", specifier = "==4.0.1" },
-    { name = "beanie" },
+    { name = "beanie", specifier = "==2.1.0" },
     { name = "email-validator" },
     { name = "fastapi" },
+    { name = "fastapi-filter", specifier = ">=2.0.0" },
     { name = "fastapi-mail" },
+    { name = "fastapi-pagination", specifier = ">=0.15.14" },
     { name = "httpx" },
     { name = "itsdangerous" },
     { name = "passlib", extras = ["bcrypt"] },
@@ -510,6 +514,19 @@ wheels = [
 ]
 
 [[package]]
+name = "fastapi-filter"
+version = "2.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "fastapi" },
+    { name = "pydantic" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/36/2e/84c313944d4d9195810e5ed920f231883b0b088b3ff528721e70ef9a8509/fastapi_filter-2.0.0.tar.gz", hash = "sha256:84157d83c52eb16f41f9b8e5bd054d9c9df87b63e23b843f6dbd5c84492ca47e", size = 9068, upload-time = "2024-05-07T19:14:00.587Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e4/1c/b13a5fdce5c496b0be3dc35a2b099210763e8bdd80b6b3c2881eadb18e93/fastapi_filter-2.0.0-py3-none-any.whl", hash = "sha256:14c2ae6819fa71e2db5b29f741fc1f829b14ccf12dce29630e7f87329e7e5cf9", size = 9770, upload-time = "2024-05-07T19:13:59.332Z" },
+]
+
+[[package]]
 name = "fastapi-mail"
 version = "1.6.4"
 source = { registry = "https://pypi.org/simple" }
@@ -529,6 +546,20 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/b5/c6/10352b42b09a9f57ff75f9cfa2812a523fdfdf5774b93d1243a370dfb360/fastapi_mail-1.6.4.tar.gz", hash = "sha256:be6b5ed3488804c3e877a723c4df673cec2d54574a1320e08ddeb36c36198605", size = 14394, upload-time = "2026-05-07T06:15:41.086Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/5d/f4/daa8f21238a72b42797a4a8f02b632d87f8ebc11a173f619f54ebf424af1/fastapi_mail-1.6.4-py3-none-any.whl", hash = "sha256:e2ad20c15a68538723d47a2b2df8625d861cc4e023868f8f1c7f0a5999d895cc", size = 16216, upload-time = "2026-05-07T06:15:42.38Z" },
+]
+
+[[package]]
+name = "fastapi-pagination"
+version = "0.15.14"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "fastapi" },
+    { name = "pydantic" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/88/23/a6ede2d55fb92be2bff1568e84027e374311c8b1262cd908da3db65f0025/fastapi_pagination-0.15.14.tar.gz", hash = "sha256:61209b30172f928887a2537a85d144a2ae970edfadf160aab7c1fb15676dd651", size = 608334, upload-time = "2026-05-30T12:16:35.469Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ad/3d/9e2ee25fd0a1a2c63995967885b2ff5d4f0cc40823817a1c745351ea745c/fastapi_pagination-0.15.14-py3-none-any.whl", hash = "sha256:b1c2ae46ae9952199f75d07726e3f11909ecd32bf12701a11f3e1080f05c4e91", size = 65778, upload-time = "2026-05-30T12:16:34.384Z" },
 ]
 
 [[package]]

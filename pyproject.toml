@@ -21,9 +21,11 @@ dependencies = [
     "python-multipart",
     "pyotp",
     "polyfactory",
-    "beanie",
+    "beanie==2.1.0",
     "typing-extensions",
     "pytest-env",
+    "fastapi-pagination>=0.15.14",
+    "fastapi-filter>=2.0.0",
 ]
 
 # ==== Dependency Groups ====

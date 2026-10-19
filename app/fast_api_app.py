@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from logging.config import dictConfig
 
 from fastapi import FastAPI
+from fastapi_pagination import add_pagination
 
 from app.app_bootstrap import bootstrap
 from app.core.exception_handler.root import root_exception_handlers
@@ -39,4 +40,5 @@ app = FastAPI(
     exception_handlers=root_exception_handlers(),
 )
 
+add_pagination(app)
 app.include_router(router=root_router)

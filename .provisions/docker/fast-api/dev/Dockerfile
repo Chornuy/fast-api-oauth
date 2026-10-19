@@ -44,13 +44,15 @@ COPY --chown=${USER_NAME}:${USER_NAME} pyproject.toml uv.lock ./
 
 # Compile a strict relative isolation directory using modern BuildKit caching mounts
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv venv .venv && \
+    uv venv /var/.venv && \
     uv sync --frozen --dev
 
 # ======================================================================
 # STAGE 3: Clean, Secure Execution Layer Target
 # ======================================================================
 FROM base AS runner
+
+COPY --from=ghcr.io/astral-sh/uv:0.7 /uv /uvx /bin/
 
 # Grab native production runtime libraries along with gosu instantly from Debian
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -62,10 +64,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR ${APP_PATH}
 
 # Pull down the pre-compiled virtual environment layer from our builder stage
-COPY --from=builder --chown=${USER_NAME}:${USER_NAME} ${APP_PATH}/.venv ${APP_PATH}/.venv
+COPY --from=builder --chown=${USER_NAME}:${USER_NAME} /var/.venv /var/.venv
 
-# Directly prepend our new local virtual environment binaries straight onto the runtime path execution chain
-ENV PATH="${APP_PATH}/.venv/bin:$PATH"
 
 # Set up core runtime volume directories and entrypoint vectors
 COPY --chmod=755 .provisions/docker/fast-api/dev/docker-entrypoint.sh /usr/local/bin/
@@ -76,10 +76,13 @@ RUN mkdir /docker-startup-script
 # mounted volume startup hooks. Your entrypoint then handles dropping down to your 'app' account via gosu.
 USER ${USER_NAME}
 
+ENV PATH="/var/.venv/bin:$PATH" \
+    UV_PROJECT_ENVIRONMENT="/var/.venv"
+
 ENTRYPOINT ["docker-entrypoint.sh"]
 
 USER ${USER_NAME}
 # Layer in the remainder of your application components
 COPY --chown=${USER_NAME}:${USER_NAME} . ${APP_PATH}
 
-CMD [ "uvicorn", "app.fast_api_app:app", "--host", "0.0.0.0", "--port", "8080", "--reload" ]
+CMD [ "uv", "run", "uvicorn", "app.fast_api_app:app", "--host", "0.0.0.0", "--port", "8080", "--reload" ]
